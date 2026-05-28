@@ -1017,39 +1017,39 @@
           {
                 "category": "文件总计",
                 "totalAuditPoints": 1,
-                "aiFound": 0,
-                "aiChecked": 2,
-                "hitAuditPoints": 0,
+                "aiFound": 1,
+                "aiChecked": 1,
+                "hitAuditPoints": 1,
                 "foundRate": {
-                      "numerator": 0,
+                      "numerator": 1,
                       "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "value": 1,
+                      "percent": "100%"
                 },
                 "hitRate": {
-                      "numerator": 0,
-                      "denominator": 2,
-                      "value": 0,
-                      "percent": "0%"
+                      "numerator": 1,
+                      "denominator": 1,
+                      "value": 1,
+                      "percent": "100%"
                 }
           },
           {
                 "category": "上下文不一致",
                 "totalAuditPoints": 1,
-                "aiFound": 0,
-                "aiChecked": 2,
-                "hitAuditPoints": 0,
+                "aiFound": 1,
+                "aiChecked": 1,
+                "hitAuditPoints": 1,
                 "foundRate": {
-                      "numerator": 0,
+                      "numerator": 1,
                       "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "value": 1,
+                      "percent": "100%"
                 },
                 "hitRate": {
-                      "numerator": 0,
-                      "denominator": 2,
-                      "value": 0,
-                      "percent": "0%"
+                      "numerator": 1,
+                      "denominator": 1,
+                      "value": 1,
+                      "percent": "100%"
                 }
           }
     ];
@@ -1058,26 +1058,25 @@
           {
                 "id": "A1",
                 "title": "上下文不一致",
-                "original": "“红利策略代表指数股息率情况”中展示为“4.26% > 4.46% > 5.60%”，但数值大小关系实际为5.60%最高、4.46%次之、4.26%最低。",
+                "original": "中部图表标题为“今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍”，但图表横轴三组均标注为“近3年”，脚注又写明“截至区间2022.9.1-2025.8.31”，标题的“今年以来”与图表/脚注展示的统计区间不一致。",
                 "hit": "上下文不一致",
-                "rule": "材料中的图表、数据、标题和解释文字应互相对应，数据口径、统计区间、来源说明与正文结论应保持一致。",
-                "suggestion": "请调整排序或删除/更正中间的比较符号，确保图示关系与实际数值大小一致。",
+                "rule": "材料中的标题、图表、脚注、数据来源等应保持上下文一致；数据口径、统计区间、来源说明与正文结论应一致。",
+                "suggestion": "请统一该图表的标题、横轴和脚注统计区间；如表达“今年以来”，应补充今年以来对应数据和截至日期；如使用2022.9.1-2025.8.31区间，应调整标题表述。",
                 "action": "退回修改",
-                "box": { "left": 10, "top": 48, "width": 80, "height": 11 },
-                "matches": [],
-                "matchDetails": []
-          },
-          {
-                "id": "A2",
-                "title": "上下文不一致",
-                "original": "“年化波动率-近一年”中展示为“17.35% > 18.80% > 14.86%”，但17.35%并不大于18.80%，比较关系与数值不一致。",
-                "hit": "上下文不一致",
-                "rule": "材料中的图表、数据、标题和解释文字应互相对应，数据口径、统计区间、来源说明与正文结论应保持一致。",
-                "suggestion": "请更正比较符号或调整展示顺序，使图表表达与数值大小关系一致。",
-                "action": "退回修改",
-                "box": { "left": 10, "top": 64, "width": 80, "height": 11 },
-                "matches": [],
-                "matchDetails": []
+                "box": { "left": 8, "top": 23, "width": 85, "height": 20 },
+                "matches": [
+                      "M1"
+                ],
+                "matchDetails": [
+                      {
+                            "manualId": "M1",
+                            "manualTitle": "上下文不一致",
+                            "score": 0.2749,
+                            "semanticScore": 0.2749,
+                            "positionIou": 0.5869,
+                            "method": "category-content-and-position"
+                      }
+                ]
           }
     ];
 

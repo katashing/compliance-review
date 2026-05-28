@@ -965,7 +965,7 @@
       <section class="review-panel active" id="aiPanel" data-review-mode="ai" tabindex="0" aria-label="AI审核区域">
         <div class="review-panel-head">
           <div>
-            <h3>AI审核：<span class="panel-verdict reject">退回</span>，<span id="aiCount">0项</span></h3>
+            <h3>AI审核：<span class="panel-verdict pass">通过</span>，<span id="aiCount">0项</span></h3>
             <p>点击本区域显示 AI 审核点标注。</p>
           </div>
         </div>
@@ -1018,7 +1018,7 @@
                 "category": "文件总计",
                 "totalAuditPoints": 1,
                 "aiFound": 0,
-                "aiChecked": 1,
+                "aiChecked": 0,
                 "hitAuditPoints": 0,
                 "foundRate": {
                       "numerator": 0,
@@ -1028,8 +1028,8 @@
                 },
                 "hitRate": {
                       "numerator": 0,
-                      "denominator": 1,
-                      "value": 0,
+                      "denominator": 0,
+                      "value": null,
                       "percent": "0%"
                 }
           },
@@ -1037,7 +1037,7 @@
                 "category": "上下文不一致",
                 "totalAuditPoints": 1,
                 "aiFound": 0,
-                "aiChecked": 1,
+                "aiChecked": 0,
                 "hitAuditPoints": 0,
                 "foundRate": {
                       "numerator": 0,
@@ -1047,27 +1047,14 @@
                 },
                 "hitRate": {
                       "numerator": 0,
-                      "denominator": 1,
-                      "value": 0,
+                      "denominator": 0,
+                      "value": null,
                       "percent": "0%"
                 }
           }
     ];
 
-    const items = [
-          {
-                "id": "A1",
-                "title": "上下文不一致",
-                "original": "材料标题及产品信息均宣传“中证通用航空主题ETF/通用航空ETF”，但正文多处以“低空经济”作为核心投资主题进行产业空间、政策定位和市场规模论证，未充分说明“低空经济”与“中证通用航空主题指数/通用航空ETF”之间的对应关系。",
-                "hit": "上下文不一致",
-                "rule": "材料中的标题、正文、图表、数据来源、指数名称、产品信息等应保持上下文一致；前后表述应指向同一产品、同一指数或同一投资主题，避免影响投资者理解产品性质和投资决策。",
-                "suggestion": "补充说明低空经济、通用航空产业与中证通用航空主题指数之间的关系，或将相关表述统一为与产品跟踪指数一致的口径；涉及低空经济市场规模、政策定位等内容时，应明确其与基金投资标的的关联及差异。",
-                "action": "退回修改",
-                "box": { "left": 4, "top": 20, "width": 92, "height": 32 },
-                "matches": [],
-                "matchDetails": []
-          }
-    ];
+    const items = [];
 
     const manualAnnotations = [
           {
