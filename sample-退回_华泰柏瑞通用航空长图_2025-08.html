@@ -1065,6 +1065,9 @@
     const manualForm = document.querySelector("#manualForm");
     const manualAdd = document.querySelector("#manualAdd");
     const manualExport = document.querySelector("#manualExport");
+    const manualExport = document.querySelector("#manualExport");
+    const manualExport = document.querySelector("#manualExport");
+    const manualExport = document.querySelector("#manualExport");
     const manualCards = document.querySelector("#manualCards");
     const manualReset = document.querySelector("#manualReset");
     const manualCollapse = document.querySelector("#manualCollapse");
@@ -1228,6 +1231,32 @@ function formatRate(numerator, denominator) {
       localStorage.setItem(manualStoreKey, JSON.stringify(manualItems));
     }
 
+    function safeFileName(value) {
+      return String(value || "sample")
+        .trim()
+        .replace(/[\\/:*?"<>|]/g, "_")
+        .replace(/\s+/g, "_")
+        .slice(0, 80);
+    }
+
+
+
+    function exportTimestamp() {
+      const date = new Date();
+      const pad = (value) => String(value).padStart(2, "0");
+      return [
+        date.getFullYear(),
+        pad(date.getMonth() + 1),
+        pad(date.getDate())
+      ].join("") + "-" + [
+        pad(date.getHours()),
+        pad(date.getMinutes()),
+        pad(date.getSeconds())
+      ].join("");
+    }
+
+
+
     function normalizeManualExportItem(item, index) {
       return {
         id: item.id && item.id.startsWith("M") ? item.id : `M${index + 1}`,
@@ -1244,7 +1273,7 @@ function formatRate(numerator, denominator) {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "manual-review.json";
+      link.download = `${safeFileName(document.title.replace(/ - .*$/, ""))}_manual-review_${exportTimestamp()}.json`;
       document.body.appendChild(link);
       link.click();
       link.remove();
