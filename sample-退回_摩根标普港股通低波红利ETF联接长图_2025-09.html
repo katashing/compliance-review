@@ -279,6 +279,13 @@
       line-height: 1.5;
     }
 
+    .panel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
     .review-count {
       min-width: 48px;
       color: var(--muted);
@@ -962,7 +969,10 @@
             <h3>人工审核：<span class="panel-verdict reject">退回</span>，<span id="manualCount">0项</span></h3>
             <p>点击本区域显示人工审核点标注。</p>
           </div>
-          <button class="action-btn primary" type="button" id="manualAdd">新增审核点</button>
+          <div class="panel-actions">
+            <button class="action-btn" type="button" id="manualExport">导出结果</button>
+            <button class="action-btn primary" type="button" id="manualAdd">新增审核点</button>
+          </div>
         </div>
         <form class="manual-form is-collapsed" id="manualForm">
           <div class="form-grid">
@@ -998,39 +1008,39 @@
           {
                 "category": "文件总计",
                 "totalAuditPoints": 1,
-                "aiFound": 0,
+                "aiFound": 1,
                 "aiChecked": 1,
-                "hitAuditPoints": 0,
+                "hitAuditPoints": 1,
                 "foundRate": {
-                      "numerator": 0,
+                      "numerator": 1,
                       "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "value": 1,
+                      "percent": "100%"
                 },
                 "hitRate": {
-                      "numerator": 0,
+                      "numerator": 1,
                       "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "value": 1,
+                      "percent": "100%"
                 }
           },
           {
                 "category": "上下文不一致",
                 "totalAuditPoints": 1,
-                "aiFound": 0,
+                "aiFound": 1,
                 "aiChecked": 1,
-                "hitAuditPoints": 0,
+                "hitAuditPoints": 1,
                 "foundRate": {
-                      "numerator": 0,
+                      "numerator": 1,
                       "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "value": 1,
+                      "percent": "100%"
                 },
                 "hitRate": {
-                      "numerator": 0,
+                      "numerator": 1,
                       "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "value": 1,
+                      "percent": "100%"
                 }
           }
     ];
@@ -1039,14 +1049,25 @@
           {
                 "id": "A1",
                 "title": "上下文不一致",
-                "original": "材料前文核心推广对象为“标普港股通低波红利指数/目标ETF/联接基金”，但后文图示“红利策略代表指数股息率情况”“年化波动率-近一年”中使用“红利低波指数”“中证红利指数”“标普港股通低波红利指数”进行排序比较，其中“红利低波指数”未在前文明确全称或与其他指数的关系，容易与主推的“标普港股通低波红利指数”混淆。",
+                "original": "图表标题表述为“今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍”，但图表横轴展示了多个区间，且前两组区间标识不清/疑似重复为“近3年”，与标题强调的“今年以来”口径不完全对应。",
                 "hit": "上下文不一致",
-                "rule": "材料中的标题、正文、图表、脚注、数据来源、指数名称等应保持上下文一致；图表、数据、标题和解释文字应互相对应。",
-                "suggestion": "补充“红利低波指数”的完整指数名称，并统一各处指数简称；如为不同指数，应在图表或脚注中明确说明比较对象及口径，避免投资者误认为均指同一标的指数。",
+                "rule": "材料中的标题、正文、图表、脚注、数据来源等应保持上下文一致，图表、数据、标题和解释文字应互相对应，数据口径、统计区间、来源说明与正文结论应一致。",
+                "suggestion": "请核对图表横轴区间标识及标题口径。如标题仅说明今年以来表现，应突出对应区间并弱化或拆分其他区间；如展示多个区间，应将标题改为覆盖全部区间的表述，并确保各区间标签清晰准确。",
                 "action": "退回修改",
-                "box": { "left": 8, "top": 47, "width": 84, "height": 32 },
-                "matches": [],
-                "matchDetails": []
+                "box": { "left": 7, "top": 28, "width": 86, "height": 18 },
+                "matches": [
+                      "M1"
+                ],
+                "matchDetails": [
+                      {
+                            "manualId": "M1",
+                            "manualTitle": "上下文不一致",
+                            "score": 0.5378,
+                            "semanticScore": 0.5378,
+                            "positionIou": 0.3846,
+                            "method": "semantic-text-and-position"
+                      }
+                ]
           }
     ];
 
@@ -1067,6 +1088,7 @@
     const reviewPanels = document.querySelectorAll(".review-panel");
     const manualForm = document.querySelector("#manualForm");
     const manualAdd = document.querySelector("#manualAdd");
+    const manualExport = document.querySelector("#manualExport");
     const manualCards = document.querySelector("#manualCards");
     const manualReset = document.querySelector("#manualReset");
     const manualCollapse = document.querySelector("#manualCollapse");
@@ -1228,6 +1250,29 @@ function formatRate(numerator, denominator) {
 
     function saveManualItems() {
       localStorage.setItem(manualStoreKey, JSON.stringify(manualItems));
+    }
+
+    function normalizeManualExportItem(item, index) {
+      return {
+        id: item.id && item.id.startsWith("M") ? item.id : `M${index + 1}`,
+        title: item.title,
+        original: item.original || "",
+        suggestion: item.suggestion || "",
+        box: item.box || fallbackBox(index)
+      };
+    }
+
+    function exportManualReview() {
+      const exportItems = manualItems.map(normalizeManualExportItem);
+      const blob = new Blob([JSON.stringify(exportItems, null, 2)], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "manual-review.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
     }
 
     function formatBox(box) {
@@ -1411,6 +1456,11 @@ function formatRate(numerator, denominator) {
       resetManualForm();
       switchReviewMode("manual", { force: true });
       showManualForm();
+    });
+
+    manualExport.addEventListener("click", (event) => {
+      event.stopPropagation();
+      exportManualReview();
     });
 
     imageWrap.addEventListener("pointerdown", (event) => {

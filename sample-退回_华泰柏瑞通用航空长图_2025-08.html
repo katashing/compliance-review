@@ -279,6 +279,13 @@
       line-height: 1.5;
     }
 
+    .panel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
     .review-count {
       min-width: 48px;
       color: var(--muted);
@@ -962,7 +969,10 @@
             <h3>人工审核：<span class="panel-verdict reject">退回</span>，<span id="manualCount">0项</span></h3>
             <p>点击本区域显示人工审核点标注。</p>
           </div>
-          <button class="action-btn primary" type="button" id="manualAdd">新增审核点</button>
+          <div class="panel-actions">
+            <button class="action-btn" type="button" id="manualExport">导出结果</button>
+            <button class="action-btn primary" type="button" id="manualAdd">新增审核点</button>
+          </div>
         </div>
         <form class="manual-form is-collapsed" id="manualForm">
           <div class="form-grid">
@@ -1054,6 +1064,7 @@
     const reviewPanels = document.querySelectorAll(".review-panel");
     const manualForm = document.querySelector("#manualForm");
     const manualAdd = document.querySelector("#manualAdd");
+    const manualExport = document.querySelector("#manualExport");
     const manualCards = document.querySelector("#manualCards");
     const manualReset = document.querySelector("#manualReset");
     const manualCollapse = document.querySelector("#manualCollapse");
@@ -1215,6 +1226,29 @@ function formatRate(numerator, denominator) {
 
     function saveManualItems() {
       localStorage.setItem(manualStoreKey, JSON.stringify(manualItems));
+    }
+
+    function normalizeManualExportItem(item, index) {
+      return {
+        id: item.id && item.id.startsWith("M") ? item.id : `M${index + 1}`,
+        title: item.title,
+        original: item.original || "",
+        suggestion: item.suggestion || "",
+        box: item.box || fallbackBox(index)
+      };
+    }
+
+    function exportManualReview() {
+      const exportItems = manualItems.map(normalizeManualExportItem);
+      const blob = new Blob([JSON.stringify(exportItems, null, 2)], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "manual-review.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
     }
 
     function formatBox(box) {
@@ -1398,6 +1432,11 @@ function formatRate(numerator, denominator) {
       resetManualForm();
       switchReviewMode("manual", { force: true });
       showManualForm();
+    });
+
+    manualExport.addEventListener("click", (event) => {
+      event.stopPropagation();
+      exportManualReview();
     });
 
     imageWrap.addEventListener("pointerdown", (event) => {
