@@ -1,0 +1,1508 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>退-华泰柏瑞通用航空长图 - 合规审核结果样例</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #607086;
+      --line: #dce4ef;
+      --accent: #0f83d8;
+      --danger: #df2b32;
+      --warn: #b76a00;
+      --ok: #1f8a5b;
+      --shadow: 0 12px 34px rgba(32, 48, 72, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(300px, 34vw) minmax(620px, 1fr);
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .image-pane {
+      min-width: 0;
+      min-height: 0;
+      padding: 20px;
+      background: #eaf2fb;
+      border-right: 1px solid var(--line);
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 14px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 11px;
+      color: var(--accent);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus-visible {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .stage {
+      min-height: 0;
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: #cfe8f7;
+      box-shadow: var(--shadow);
+      overscroll-behavior: contain;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+    }
+
+    .image-wrap {
+      position: relative;
+      width: min(100%, 420px);
+      margin: 0 auto;
+      line-height: 0;
+    }
+
+    .image-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .mark {
+      position: absolute;
+      border: 4px solid var(--danger);
+      background: rgba(223, 43, 50, 0.03);
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+
+    .mark.active {
+      border-color: #ffb000;
+      background: rgba(255, 176, 0, 0.12);
+      box-shadow: 0 0 0 5px rgba(255, 176, 0, 0.24);
+    }
+
+    .mark-label {
+      position: absolute;
+      left: -1px;
+      top: -1px;
+      height: 33px;
+      min-width: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      background: var(--danger);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .mark.active .mark-label {
+      background: #ffb000;
+      color: #3a2500;
+    }
+
+    .mark.manual {
+      border-color: var(--accent);
+      background: rgba(15, 131, 216, 0.05);
+    }
+
+    .mark.manual .mark-label {
+      background: var(--accent);
+    }
+
+    .mark.manual.active {
+      border-color: #1f8a5b;
+      background: rgba(31, 138, 91, 0.12);
+      box-shadow: 0 0 0 5px rgba(31, 138, 91, 0.22);
+    }
+
+    .mark.manual.active .mark-label {
+      background: #1f8a5b;
+      color: #fff;
+    }
+
+    .draft-mark {
+      position: absolute;
+      border: 3px dashed var(--accent);
+      background: rgba(15, 131, 216, 0.10);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .image-wrap.selecting {
+      cursor: crosshair;
+      user-select: none;
+    }
+
+    .mark-note {
+      position: absolute;
+      left: 54px;
+      top: 6px;
+      max-width: min(440px, calc(100% - 62px));
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .content-pane {
+      min-width: 0;
+      height: 100vh;
+      overflow: auto;
+      padding: 20px 22px 28px;
+      background: #f8fafc;
+    }
+
+    .review-workspace {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      align-items: start;
+    }
+
+    .review-panel {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+      max-height: calc(100vh - 450px);
+      min-height: 260px;
+      overflow: auto;
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(32, 48, 72, 0.06);
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .review-panel.active {
+      border-color: var(--accent);
+      box-shadow: 0 12px 28px rgba(15, 131, 216, 0.15);
+    }
+
+    .review-panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .review-panel-head h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .panel-verdict.reject {
+      color: #b81722;
+    }
+
+    .panel-verdict.pass {
+      color: #1f7650;
+    }
+
+    .review-panel-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .review-count {
+      min-width: 48px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .summary {
+      margin-bottom: 14px;
+      padding: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .summary-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .verdict {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: #fff0f1;
+      color: #b81722;
+      border: 1px solid #ffc7cc;
+      font-size: 14px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .verdict.reject {
+      color: #b81722;
+      background: #fff0f1;
+      border-color: #ffc7cc;
+    }
+
+    .verdict.pass {
+      color: #1f7650;
+      background: #ecfaf3;
+      border-color: #bce8cf;
+    }
+
+    .summary p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .stat {
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .metric-block {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+      overflow: hidden;
+    }
+
+    .metric-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: #f6faff;
+    }
+
+    .metric-title h3 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .metric-title span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .metric-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .metric-table th,
+    .metric-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .metric-table th {
+      color: var(--muted);
+      font-weight: 900;
+      background: #fff;
+      white-space: nowrap;
+    }
+
+    .metric-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .num {
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .metric-list {
+      display: grid;
+      gap: 0;
+      padding: 14px;
+    }
+
+    .metric-headrow {
+      display: grid;
+      grid-template-columns: minmax(170px, 1.15fr) 88px minmax(190px, 1fr) minmax(190px, 1fr);
+      gap: 12px;
+      padding: 10px 14px 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .metric-card {
+      display: grid;
+      grid-template-columns: minmax(170px, 1.15fr) 88px minmax(190px, 1fr) minmax(190px, 1fr);
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-bottom: 0;
+    }
+
+    .metric-card:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .metric-card.total {
+      background: #f3f8fc;
+      border-color: #c7d7e8;
+    }
+
+    .metric-card.total .metric-title strong,
+    .metric-card.total .metric-total strong,
+    .metric-card.total .metric-value strong {
+      color: var(--accent);
+    }
+
+    .metric-header {
+      min-width: 0;
+    }
+
+    .metric-title {
+      min-width: 0;
+    }
+
+    .metric-title strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .metric-title span {
+      display: none;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .metric-total {
+      min-width: 0;
+      padding: 0 8px;
+      text-align: center;
+    }
+
+    .metric-total strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .metric-total span {
+      display: none;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .metric-item {
+      min-width: 0;
+      padding: 0;
+    }
+
+    .metric-label {
+      display: none;
+      margin: 0;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.4;
+    }
+
+    .metric-label.found {
+      color: #1f8a5b;
+    }
+
+    .metric-label.hit {
+      color: #a66f00;
+    }
+
+    .metric-value {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 3px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-value strong {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .metric-value span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .metric-bar {
+      display: flex;
+      position: relative;
+      height: 8px;
+      margin-top: 7px;
+      overflow: hidden;
+      background: #eef3f8;
+      border-radius: 999px;
+    }
+
+    .bar-part {
+      min-width: 0;
+    }
+
+    .bar-found {
+      background: #1f8a5b;
+    }
+
+    .bar-rest {
+      background: #d7dee8;
+    }
+
+    .bar-hit {
+      background: #f1b51c;
+    }
+
+    .metric-help {
+      margin: 0;
+      padding: 10px 14px 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .metric-definitions {
+      display: none;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 0 14px 14px;
+    }
+
+    .metric-definition {
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .metric-definition strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .metric-definition code {
+      display: block;
+      margin-top: 7px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .metric-definition span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .cards {
+      margin-top: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .manual-panel {
+      gap: 14px;
+    }
+
+    .manual-form {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .manual-form.is-collapsed {
+      display: none;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .form-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-field label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      padding: 9px 10px;
+    }
+
+    .form-field textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .box-status {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .action-btn {
+      appearance: none;
+      min-height: 34px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .action-btn.primary {
+      color: #fff;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .action-btn.wide {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .action-btn.active {
+      color: #fff;
+      background: #1f8a5b;
+      border-color: #1f8a5b;
+    }
+
+    .action-btn.danger {
+      color: #fff;
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .manual-empty {
+      padding: 16px;
+      color: var(--muted);
+      background: var(--panel);
+      border: 1px dashed var(--line);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .card {
+      appearance: none;
+      display: block;
+      width: 100%;
+      padding: 0;
+      text-align: left;
+      color: inherit;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 24px rgba(32, 48, 72, 0.08);
+      cursor: pointer;
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .card:hover,
+    .card.active {
+      border-color: var(--accent);
+      box-shadow: 0 12px 28px rgba(15, 131, 216, 0.16);
+    }
+
+    .card.active {
+      transform: translateY(-1px);
+    }
+
+    .card-head {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .id {
+      width: 38px;
+      height: 30px;
+      display: inline-grid;
+      place-items: center;
+      background: var(--danger);
+      color: #fff;
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+.card-body {
+      padding: 14px 16px 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 5px;
+    }
+
+    .field dt {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .field dd {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .quote {
+      padding: 10px 12px;
+      background: #f5f8fc;
+      border-left: 3px solid var(--accent);
+      color: #34445b;
+    }
+
+    .suggestion {
+      color: #133a29;
+      background: #eefaf4;
+      border-left-color: var(--ok);
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        height: auto;
+        min-height: 100vh;
+        grid-template-columns: 1fr;
+        overflow: visible;
+      }
+
+      .image-pane {
+        height: 72vh;
+        min-height: 420px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .content-pane {
+        height: auto;
+        overflow: visible;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .image-pane,
+      .content-pane {
+        padding: 14px;
+      }
+
+      .topbar,
+      .summary-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .metric-card {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-headrow {
+        display: none;
+      }
+
+      .metric-item {
+        grid-template-columns: 64px 1fr;
+      }
+
+      .metric-definitions {
+        grid-template-columns: 1fr;
+      }
+
+      .review-workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .review-panel {
+        max-height: none;
+        overflow: visible;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-head {
+        grid-template-columns: auto 1fr;
+      }
+}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="image-pane" aria-label="原图审核标注">
+      <div class="topbar">
+        <div>
+          <h1>退-华泰柏瑞通用航空长图</h1>
+          <div class="meta"></div>
+        </div>
+        <div class="meta">
+          <a class="nav-link" href="review-flow-sample.html">返回首页</a>
+        </div>
+      </div>
+      <div class="stage" id="stage" tabindex="0">
+        <div class="image-wrap" id="imageWrap">
+          <img src="samples/退回_华泰柏瑞通用航空长图_2026-02-04/material.png" alt="待审核长图原图" />
+        </div>
+      </div>
+    </section>
+
+    <section class="content-pane" aria-label="审核结果">
+      <section class="summary" aria-label="公共审核信息">
+        <div class="summary-head">
+          <div>
+            <h2>审核结论</h2>
+            
+          </div>
+          
+        </div>
+        <div class="metric-block" aria-label="业务关注指标">
+          <div class="metric-title">
+            <h3>业务指标</h3>
+            <span>与首页口径一致</span>
+          </div>
+          <div class="metric-headrow" aria-hidden="true">
+            <span>审核类别</span>
+            <span>审核点</span>
+            <span>检出率</span>
+            <span>命中率</span>
+          </div>
+          <div class="metric-list" id="businessMetrics"></div>
+        </div>
+      </section>
+
+      <div class="review-workspace" aria-label="审核区域">
+      <section class="review-panel active" id="aiPanel" data-review-mode="ai" tabindex="0" aria-label="AI审核区域">
+        <div class="review-panel-head">
+          <div>
+            <h3>AI审核：<span class="panel-verdict pass">通过</span>，<span id="aiCount">0项</span></h3>
+            <p>点击本区域显示 AI 审核点标注。</p>
+          </div>
+        </div>
+        <div class="cards" id="cards" aria-label="AI审核点列表"></div>
+      </section>
+
+      <section class="review-panel manual-panel" id="manualPanel" data-review-mode="manual" tabindex="0" aria-label="人工审核区域">
+        <div class="review-panel-head">
+          <div>
+            <h3>人工审核：<span class="panel-verdict reject">退回</span>，<span id="manualCount">0项</span></h3>
+            <p>点击本区域显示人工审核点标注。</p>
+          </div>
+          <button class="action-btn primary" type="button" id="manualAdd">新增审核点</button>
+        </div>
+        <form class="manual-form is-collapsed" id="manualForm">
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="manualTitle">审核点</label>
+              <select id="manualTitle" name="title" required></select>
+            </div>
+            <div class="form-field full">
+              <label for="manualOriginal">问题描述</label>
+              <textarea id="manualOriginal" name="original" placeholder="说明材料中需要修改或复核的内容"></textarea>
+            </div>
+            <div class="form-field full">
+              <label for="manualSuggestion">修改建议</label>
+              <textarea id="manualSuggestion" name="suggestion" placeholder="给出业务审核建议"></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <p class="box-status" id="manualBoxStatus">未框选位置</p>
+            <button class="action-btn" type="button" id="manualBoxButton">框选位置</button>
+            <button class="action-btn" type="button" id="manualReset">清空</button>
+            <button class="action-btn" type="button" id="manualCollapse">收起</button>
+            <button class="action-btn primary" type="submit" id="manualSubmit">保存审核点</button>
+          </div>
+        </form>
+        <div class="cards" id="manualCards" aria-label="人工审核点列表"></div>
+      </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const businessMetrics = [
+          {
+                "category": "文件总计",
+                "totalAuditPoints": 1,
+                "aiFound": 0,
+                "aiChecked": 0,
+                "hitAuditPoints": 0,
+                "foundRate": {
+                      "numerator": 0,
+                      "denominator": 1,
+                      "value": 0,
+                      "percent": "0%"
+                },
+                "hitRate": {
+                      "numerator": 0,
+                      "denominator": 0,
+                      "value": null,
+                      "percent": "0%"
+                }
+          },
+          {
+                "category": "上下文不一致",
+                "totalAuditPoints": 1,
+                "aiFound": 0,
+                "aiChecked": 0,
+                "hitAuditPoints": 0,
+                "foundRate": {
+                      "numerator": 0,
+                      "denominator": 1,
+                      "value": 0,
+                      "percent": "0%"
+                },
+                "hitRate": {
+                      "numerator": 0,
+                      "denominator": 0,
+                      "value": null,
+                      "percent": "0%"
+                }
+          }
+    ];
+
+    const items = [];
+
+    const manualAnnotations = [
+          {
+                "id": "M1",
+                "title": "上下文不一致",
+                "original": "该材料2025年8月提审，图文及上下文表述的时间区间不一致。上下文结合，走势图应该要列出2020年以来的走势图。",
+                "suggestion": "统一图文与上下文时间区间；如正文语义覆盖2020年以来，应补充2020年以来走势图，或将正文表述调整为与现有走势图一致的区间。",
+                "box": { "left": 3, "top": 21.62, "width": 94, "height": 8.58 }
+          }
+    ];
+
+    const imageWrap = document.querySelector("#imageWrap");
+    const stage = document.querySelector("#stage");
+    const cards = document.querySelector("#cards");
+    const businessMetricRows = document.querySelector("#businessMetrics");
+    const reviewPanels = document.querySelectorAll(".review-panel");
+    const manualForm = document.querySelector("#manualForm");
+    const manualAdd = document.querySelector("#manualAdd");
+    const manualCards = document.querySelector("#manualCards");
+    const manualReset = document.querySelector("#manualReset");
+    const manualCollapse = document.querySelector("#manualCollapse");
+    const manualBoxButton = document.querySelector("#manualBoxButton");
+    const manualBoxStatus = document.querySelector("#manualBoxStatus");
+    const aiCount = document.querySelector("#aiCount");
+    const manualCount = document.querySelector("#manualCount");
+    const manualStoreKey = `manual-review-word-v1:${location.pathname}`;
+    const ruleOptions = ["上下文不一致"];
+    let manualItems = loadManualItems();
+    let editingManualId = null;
+    let activeReviewMode = "ai";
+    let pendingManualBox = null;
+    let selectingManualBox = false;
+    let draftMark = null;
+    let draftStart = null;
+function formatRate(numerator, denominator) {
+      if (!denominator) return "-";
+      return `${Math.round((numerator / denominator) * 100)}%`;
+    }
+
+    function renderBusinessMetrics() {
+      businessMetricRows.innerHTML = businessMetrics.map((metric) => {
+        const foundRateValue = metric.foundRate?.value ?? 0;
+        const hitRateValue = metric.hitRate?.value ?? 0;
+        const foundRate = metric.foundRate?.percent ?? formatRate(metric.aiFound, metric.totalAuditPoints);
+        const hitRate = metric.hitRate?.percent ?? formatRate(metric.hitAuditPoints, metric.aiChecked);
+
+        return `
+          <article class="metric-card ${metric.category === "文件总计" ? "total" : ""}">
+            <div class="metric-header">
+              <div class="metric-title">
+                <strong>${metric.category}</strong>
+              </div>
+            </div>
+            <div class="metric-total">
+              <strong>${metric.totalAuditPoints}</strong>
+              <span>审核点</span>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value"><strong>${foundRate}</strong><span>${metric.aiFound}/${metric.totalAuditPoints}</span></div>
+              <div class="metric-bar" aria-label="${metric.category} 检出率 ${foundRate}">
+                <div class="bar-part bar-found" style="width:${foundRateValue * 100}%"></div>
+                <div class="bar-part bar-rest" style="width:${(1 - foundRateValue) * 100}%"></div>
+              </div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value"><strong>${hitRate}</strong><span>${metric.hitAuditPoints}/${metric.aiChecked}</span></div>
+              <div class="metric-bar" aria-label="${metric.category} 命中率 ${hitRate}">
+                <div class="bar-part bar-hit" style="width:${hitRateValue * 100}%"></div>
+                <div class="bar-part bar-rest" style="width:${(1 - hitRateValue) * 100}%"></div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function fallbackBox(index) {
+      const top = 8 + (index % 8) * 10;
+      return { left: 4, top, width: 92, height: 7.5 };
+    }
+
+    function renderRuleOptions() {
+      manualForm.elements.title.innerHTML = ruleOptions.map((option) => (
+        `<option value="${option}">${option}</option>`
+      )).join("");
+    }
+
+    function manualSeedItems() {
+      return manualAnnotations.map((item, index) => ({
+        ...item,
+        id: item.id || `M${index + 1}`,
+        title: ruleOptions.includes(item.title) ? item.title : ruleOptions[0],
+        original: item.original,
+        suggestion: item.suggestion,
+        box: item.box || fallbackBox(index),
+        source: "seed"
+      }));
+    }
+
+    function manualDisplayItems() {
+      return manualItems.map((item, index) => ({
+        ...item,
+        id: item.id,
+        title: item.title,
+        hit: "人工审核",
+        action: "人工记录",
+        box: item.box || fallbackBox(index + manualSeedItems().length),
+        source: "saved"
+      }));
+    }
+
+    function currentReviewItems() {
+      return activeReviewMode === "manual" ? manualDisplayItems() : items;
+    }
+
+    function renderMarks() {
+      imageWrap.querySelectorAll(".mark").forEach((mark) => mark.remove());
+      const reviewItems = currentReviewItems();
+      reviewItems.forEach((item) => {
+        const mark = document.createElement("button");
+        mark.type = "button";
+        mark.className = activeReviewMode === "manual" ? "mark manual" : "mark";
+        mark.id = `mark-${activeReviewMode}-${item.id}`;
+        mark.setAttribute("aria-label", `${item.id} ${item.title}`);
+        mark.style.left = `${item.box.left}%`;
+        mark.style.top = `${item.box.top}%`;
+        mark.style.width = `${item.box.width}%`;
+        mark.style.height = `${item.box.height}%`;
+        mark.innerHTML = `<span class="mark-label">${item.id}</span><span class="mark-note">${item.title}</span>`;
+        mark.addEventListener("click", () => activate(item.id, { scrollCard: true }, activeReviewMode));
+        imageWrap.appendChild(mark);
+      });
+      return reviewItems;
+    }
+
+    function renderCards() {
+      aiCount.textContent = `${items.length}项`;
+      cards.innerHTML = items.map((item) => `
+        <button class="card" type="button" id="card-ai-${item.id}" data-id="${item.id}" data-review-mode="ai">
+          <div class="card-head">
+            <span class="id">${item.id}</span>
+            <h3>${item.title}</h3>
+          </div>
+          <dl class="card-body">
+            <div class="field">
+              <dt>问题描述</dt>
+              <dd>${item.original}</dd>
+            </div>
+            <div class="field">
+              <dt>建议修改</dt>
+              <dd class="quote suggestion">${item.suggestion}</dd>
+            </div>
+          </dl>
+        </button>
+      `).join("");
+
+      cards.querySelectorAll(".card").forEach((card) => {
+        card.addEventListener("click", (event) => {
+          event.stopPropagation();
+          switchReviewMode("ai", { force: activeReviewMode !== "ai" });
+          activate(card.dataset.id, { scrollImage: true }, "ai");
+        });
+      });
+    }
+
+    function loadManualItems() {
+      const saved = localStorage.getItem(manualStoreKey);
+      if (!saved) {
+        return manualSeedItems();
+      }
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return manualSeedItems();
+      }
+    }
+
+    function saveManualItems() {
+      localStorage.setItem(manualStoreKey, JSON.stringify(manualItems));
+    }
+
+    function formatBox(box) {
+      if (!box) return "未框选位置";
+      return `已框选：左 ${box.left.toFixed(1)}%，上 ${box.top.toFixed(1)}%，宽 ${box.width.toFixed(1)}%，高 ${box.height.toFixed(1)}%`;
+    }
+
+    function updateBoxStatus() {
+      manualBoxStatus.textContent = formatBox(pendingManualBox);
+    }
+
+    function resetManualForm() {
+      editingManualId = null;
+      pendingManualBox = null;
+      stopBoxSelection();
+      manualForm.reset();
+      manualForm.querySelector("#manualSubmit").textContent = "保存审核点";
+      updateBoxStatus();
+    }
+
+    function showManualForm() {
+      manualForm.classList.remove("is-collapsed");
+      manualAdd.hidden = true;
+    }
+
+    function hideManualForm() {
+      manualForm.classList.add("is-collapsed");
+      manualAdd.hidden = false;
+    }
+
+    function renderManualCards() {
+      const displayItems = manualDisplayItems();
+      manualCount.textContent = `${displayItems.length}项`;
+      if (displayItems.length === 0) {
+        manualCards.innerHTML = '<div class="manual-empty">暂无人工审核点。可使用上方表单新增。</div>';
+        return;
+      }
+
+      manualCards.innerHTML = displayItems.map((item, index) => `
+        <article class="card" id="card-manual-${item.id}" data-id="${item.id}" data-review-mode="manual">
+          <div class="card-head">
+            <span class="id">${item.id.startsWith("M") ? item.id : `M${index + 1}`}</span>
+            <h3>${item.title}</h3>
+          </div>
+          <dl class="card-body">
+            <div class="field">
+              <dt>问题描述</dt>
+              <dd>${item.original || "未填写"}</dd>
+            </div>
+            <div class="field">
+              <dt>建议修改</dt>
+              <dd class="quote suggestion">${item.suggestion || "未填写"}</dd>
+            </div>
+            ${item.source === "saved" ? `<div class="form-actions">
+              <button class="action-btn" type="button" data-edit="${item.id}">编辑</button>
+              <button class="action-btn" type="button" data-delete="${item.id}">删除</button>
+            </div>` : ""}
+          </dl>
+        </article>
+      `).join("");
+
+      manualCards.querySelectorAll(".card").forEach((card) => {
+        card.addEventListener("click", (event) => {
+          event.stopPropagation();
+          switchReviewMode("manual", { force: activeReviewMode !== "manual" });
+          activate(card.dataset.id, { scrollImage: true }, "manual");
+        });
+      });
+
+      manualCards.querySelectorAll("[data-edit]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const item = manualItems.find((entry) => entry.id === button.dataset.edit);
+          if (!item) return;
+          editingManualId = item.id;
+          manualForm.elements.title.value = item.title;
+          manualForm.elements.original.value = item.original || "";
+          manualForm.elements.suggestion.value = item.suggestion || "";
+          pendingManualBox = item.box || null;
+          updateBoxStatus();
+          manualForm.querySelector("#manualSubmit").textContent = "更新审核点";
+          switchReviewMode("manual");
+          showManualForm();
+          manualForm.scrollIntoView({ block: "start", behavior: "smooth" });
+        });
+      });
+
+      manualCards.querySelectorAll("[data-delete]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          manualItems = manualItems.filter((entry) => entry.id !== button.dataset.delete);
+          saveManualItems();
+          renderManualCards();
+          if (activeReviewMode === "manual") {
+            renderMarks();
+          }
+        });
+      });
+    }
+
+    function switchReviewMode(mode, options = {}) {
+      if (!mode || (activeReviewMode === mode && !options.force)) {
+        return;
+      }
+      activeReviewMode = mode;
+      reviewPanels.forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.reviewMode === mode);
+      });
+      renderMarks();
+      const firstItem = currentReviewItems()[0];
+      if (firstItem) {
+        activate(firstItem.id, {}, mode);
+      }
+    }
+
+    function pointToImagePercent(event) {
+      const rect = imageWrap.getBoundingClientRect();
+      const left = Math.max(0, Math.min(event.clientX - rect.left, rect.width));
+      const top = Math.max(0, Math.min(event.clientY - rect.top, rect.height));
+      return {
+        left: (left / rect.width) * 100,
+        top: (top / rect.height) * 100
+      };
+    }
+
+    function normalizeBox(start, end) {
+      const left = Math.min(start.left, end.left);
+      const top = Math.min(start.top, end.top);
+      const width = Math.abs(end.left - start.left);
+      const height = Math.abs(end.top - start.top);
+      return {
+        left,
+        top,
+        width: Math.max(width, 1),
+        height: Math.max(height, 1)
+      };
+    }
+
+    function drawDraftBox(box) {
+      if (!draftMark) {
+        draftMark = document.createElement("div");
+        draftMark.className = "draft-mark";
+        imageWrap.appendChild(draftMark);
+      }
+      draftMark.style.left = `${box.left}%`;
+      draftMark.style.top = `${box.top}%`;
+      draftMark.style.width = `${box.width}%`;
+      draftMark.style.height = `${box.height}%`;
+    }
+
+    function startBoxSelection() {
+      switchReviewMode("manual", { force: true });
+      selectingManualBox = true;
+      imageWrap.classList.add("selecting");
+      manualBoxButton.classList.add("active");
+      manualBoxStatus.textContent = "在左侧图片上拖拽框选位置";
+    }
+
+    function stopBoxSelection() {
+      selectingManualBox = false;
+      draftStart = null;
+      imageWrap.classList.remove("selecting");
+      manualBoxButton.classList.remove("active");
+      if (draftMark) {
+        draftMark.remove();
+        draftMark = null;
+      }
+    }
+
+    manualBoxButton.addEventListener("click", () => {
+      if (selectingManualBox) {
+        stopBoxSelection();
+        updateBoxStatus();
+      } else {
+        startBoxSelection();
+      }
+    });
+
+    manualAdd.addEventListener("click", (event) => {
+      event.stopPropagation();
+      resetManualForm();
+      switchReviewMode("manual", { force: true });
+      showManualForm();
+    });
+
+    imageWrap.addEventListener("pointerdown", (event) => {
+      if (!selectingManualBox) return;
+      event.preventDefault();
+      draftStart = pointToImagePercent(event);
+      imageWrap.setPointerCapture(event.pointerId);
+      drawDraftBox({ ...draftStart, width: 1, height: 1 });
+    });
+
+    imageWrap.addEventListener("pointermove", (event) => {
+      if (!selectingManualBox || !draftStart) return;
+      event.preventDefault();
+      drawDraftBox(normalizeBox(draftStart, pointToImagePercent(event)));
+    });
+
+    imageWrap.addEventListener("pointerup", (event) => {
+      if (!selectingManualBox || !draftStart) return;
+      event.preventDefault();
+      pendingManualBox = normalizeBox(draftStart, pointToImagePercent(event));
+      stopBoxSelection();
+      updateBoxStatus();
+    });
+
+    manualForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(manualForm);
+      const nextItem = {
+        id: editingManualId || `manual-${Date.now()}`,
+        title: String(formData.get("title") || "").trim(),
+        original: String(formData.get("original") || "").trim(),
+        suggestion: String(formData.get("suggestion") || "").trim(),
+        box: pendingManualBox || fallbackBox(manualItems.length)
+      };
+      if (!nextItem.title) return;
+
+      if (editingManualId) {
+        manualItems = manualItems.map((item) => item.id === editingManualId ? nextItem : item);
+      } else {
+        manualItems = [nextItem, ...manualItems];
+      }
+      saveManualItems();
+      resetManualForm();
+      hideManualForm();
+      renderManualCards();
+      switchReviewMode("manual", { force: true });
+      activate(nextItem.id, { scrollImage: true }, "manual");
+    });
+
+    manualReset.addEventListener("click", resetManualForm);
+
+    manualCollapse.addEventListener("click", () => {
+      hideManualForm();
+    });
+
+    function scrollMarkIntoView(mark) {
+      const stageRect = stage.getBoundingClientRect();
+      const markRect = mark.getBoundingClientRect();
+      const currentTop = stage.scrollTop;
+      const centeredTop = currentTop + markRect.top - stageRect.top - (stage.clientHeight - markRect.height) / 2;
+      const maxTop = stage.scrollHeight - stage.clientHeight;
+      const nextTop = Math.max(0, Math.min(centeredTop, maxTop));
+
+      stage.scrollTo({ top: nextTop, behavior: "smooth" });
+
+      window.setTimeout(() => {
+        const stillThere = Math.abs(stage.scrollTop - nextTop) > 8;
+        if (stillThere) {
+          stage.scrollTop = nextTop;
+        }
+      }, 180);
+    }
+
+    function activate(id, options = {}, mode = activeReviewMode) {
+      document.querySelectorAll(".mark, .card").forEach((node) => node.classList.remove("active"));
+      const mark = document.querySelector(`#mark-${mode}-${id}`);
+      const card = document.querySelector(`[data-review-mode="${mode}"][data-id="${id}"]`);
+      if (!mark || !card) return;
+
+      mark.classList.add("active");
+      card.classList.add("active");
+
+      if (options.scrollImage) {
+        scrollMarkIntoView(mark);
+      }
+
+      if (options.scrollCard) {
+        card.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+    }
+
+    renderRuleOptions();
+    updateBoxStatus();
+    hideManualForm();
+    renderMarks();
+    renderBusinessMetrics();
+    renderCards();
+    renderManualCards();
+    reviewPanels.forEach((panel) => {
+      panel.addEventListener("click", () => switchReviewMode(panel.dataset.reviewMode));
+      panel.addEventListener("focusin", () => switchReviewMode(panel.dataset.reviewMode));
+    });
+    window.addEventListener("load", () => {
+      requestAnimationFrame(() => activate("P1", { scrollImage: true }, "ai"));
+    });
+  </script>
+</body>
+</html>
