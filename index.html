@@ -502,6 +502,14 @@
       color: var(--accent);
     }
 
+    .sort-button.active {
+      color: var(--accent);
+    }
+
+    .sort-button.active {
+      color: var(--accent);
+    }
+
     .empty {
       padding: 22px;
       background: var(--panel);
@@ -582,7 +590,7 @@
           <button class="sort-button metric-sort-button" type="button" data-metric-sort="category">审核类别</button>
           <button class="sort-button metric-sort-button" type="button" data-metric-sort="totalAuditPoints">审核点</button>
           <button class="sort-button metric-sort-button active" type="button" data-metric-sort="foundRate">检出率</button>
-          <button class="sort-button metric-sort-button" type="button" data-metric-sort="hitRate">命中率</button>
+          <button class="sort-button metric-sort-button" type="button" data-metric-sort="hitRate">有效命中率</button>
         </div>
         <div class="metric-list" id="businessMetrics"></div>
       </section>
@@ -598,7 +606,7 @@
           <button class="sort-button" type="button" data-sort="manualVerdict">人工结论</button>
           <button class="sort-button" type="button" data-sort="issues">审核点</button>
           <button class="sort-button" type="button" data-sort="foundRate">检出率</button>
-          <button class="sort-button" type="button" data-sort="hitRate">命中率</button>
+          <button class="sort-button" type="button" data-sort="hitRate">有效命中率</button>
           <button class="sort-button active" type="button" data-sort="date">上传日期</button>
           <span>操作</span>
         </div>
@@ -653,12 +661,12 @@
                             "numerator": 0,
                             "denominator": 0,
                             "value": null,
-                            "percent": "0%"
+                            "percent": "-"
                       }
                 },
                 "metrics": [],
                 "description": "业务人工审核指出材料图文及上下文表述的时间区间不一致。",
-                "thumb": "assets/samples/退回_华泰柏瑞通用航空长图_2026-02-04/material.png",
+                "thumb": "../samples/退回_华泰柏瑞通用航空长图_2026-02-04/material.png",
                 "href": "sample-退回_华泰柏瑞通用航空长图_2025-08.html"
           },
           {
@@ -692,7 +700,7 @@
                 },
                 "metrics": [],
                 "description": "业务人工审核指出材料文字与图表时间区间、同一指数同一时期数据存在不一致。",
-                "thumb": "assets/samples/退回_摩根标普港股通低波红利ETF联接长图_2025-09/material.png",
+                "thumb": "../samples/退回_摩根标普港股通低波红利ETF联接长图_2025-09/material.png",
                 "href": "sample-退回_摩根标普港股通低波红利ETF联接长图_2025-09.html"
           }
     ];
@@ -806,7 +814,7 @@
                                         "numerator": 0,
                                         "denominator": 0,
                                         "value": null,
-                                        "percent": "0%"
+                                        "percent": "-"
                                   }
                             }
                       },
@@ -855,7 +863,7 @@
                                   "numerator": 0,
                                   "denominator": 0,
                                   "value": null,
-                                  "percent": "0%"
+                                  "percent": "-"
                             }
                       },
                       "metrics": [
@@ -875,7 +883,7 @@
                                         "numerator": 0,
                                         "denominator": 0,
                                         "value": null,
-                                        "percent": "0%"
+                                        "percent": "-"
                                   }
                             }
                       ],
@@ -1054,7 +1062,7 @@
           </div>
           <div class="metric-item">
             <div class="metric-value"><strong>${hitRate}</strong><span>${metric.hitAuditPoints}/${metric.aiChecked}</span></div>
-            <div class="metric-bar" aria-label="${metric.category} 命中率 ${hitRate}">
+            <div class="metric-bar" aria-label="${metric.category} 有效命中率 ${hitRate}">
               <div class="bar-part bar-hit" style="width:${hitRateValue * 100}%"></div>
               <div class="bar-part bar-rest" style="width:${(1 - hitRateValue) * 100}%"></div>
             </div>
