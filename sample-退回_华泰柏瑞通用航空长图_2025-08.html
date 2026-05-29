@@ -963,7 +963,7 @@
           <div class="metric-headrow" aria-hidden="true">
             <span>审核类别</span>
             <span>审核点</span>
-            <span>检出率</span>
+            <span>违规检出率</span>
             <span>有效命中率</span>
           </div>
           <div class="metric-list" id="businessMetrics"></div>
@@ -1067,15 +1067,15 @@
           {
                 "id": "A1",
                 "title": "上下文不一致",
-                "original": "“创新加速 成长先锋”模块中，正文写“通用航空指数基日（2020/12/31）以来表现”，图表标题为“通用航空指数基日以来表现”，脚注标注“数据来源：Wind，20/12/31-25/7/31”，但图表横轴实际可见起点为“2024/7/25”，未覆盖指数基日2020/12/31至截至日2025/7/31的完整区间。",
+                "original": "“创新加速 成长先锋”模块中，正文写“通用航空指数基日（2020/12/31）以来表现”，图表标题为“通用航空指数基日以来表现”，脚注标注“20/12/31-25/7/31”，但图表横轴实际展示从“2024/7/25”至“2025/7/25”附近，未覆盖基日2020/12/31至截至日2025/7/31的完整区间。",
                 "hit": "上下文不一致",
-                "rule": "材料出现“基日以来”且列出指数基日、统计起止日期或截至日时，图表横轴必须覆盖对应起始日至截至日的完整区间；否则属于时间口径不一致。",
-                "suggestion": "统一正文、图表标题、横轴和脚注的统计区间：如保留“基日以来”，应补充覆盖2020/12/31至2025/7/31的完整走势图；如仅展示现有横轴区间，应将正文和图表标题改为与现有图表一致的区间。",
+                "rule": "材料写“基日以来”且脚注或来源列出指数基日、截至日或统计起止日期时，图表横轴必须覆盖对应起始日至截至日的完整区间；否则属于时间口径不一致。",
+                "suggestion": "统一正文、图表标题、横轴和脚注的统计区间：补充展示2020/12/31至2025/7/31的完整走势，或将正文和图表标题改为与现有横轴一致的区间。",
                 "action": "退回修改",
                 "evidence": [
                       "正文：通用航空指数基日（2020/12/31）以来表现",
                       "图表标题：通用航空指数基日以来表现",
-                      "横轴可见日期：2024/7/25、2024/9/25、2025/1/25、2025/3/25、2025/5/25、2025/7/25",
+                      "横轴日期：2024/7/25、2024/9/25、2025/1/25、2025/3/25、2025/5/25、2025/7/25",
                       "脚注：数据来源：Wind，20/12/31-25/7/31"
                 ],
                 "imageRef": "material_slice_03_y3000-4800.png",
@@ -1083,9 +1083,9 @@
                       "left": 6,
                       "top": 36,
                       "width": 88,
-                      "height": 27
+                      "height": 30
                 },
-                "box": { "left": 6, "top": 45.6, "width": 88, "height": 6.075 },
+                "box": { "left": 6, "top": 45.6, "width": 88, "height": 6.75 },
                 "matches": [
                       "M1"
                 ],
@@ -1093,9 +1093,9 @@
                       {
                             "manualId": "M1",
                             "manualTitle": "上下文不一致",
-                            "score": 0.8151,
-                            "semanticScore": 0.8151,
-                            "positionIou": 0.4832,
+                            "score": 0.8652,
+                            "semanticScore": 0.8652,
+                            "positionIou": 0.4443,
                             "method": "category-content-and-position"
                       }
                 ]
@@ -1161,7 +1161,7 @@ function formatRate(numerator, denominator) {
             </div>
             <div class="metric-item">
               <div class="metric-value"><strong>${foundRate}</strong><span>${metric.aiFound}/${metric.totalAuditPoints}</span></div>
-              <div class="metric-bar" aria-label="${metric.category} 检出率 ${foundRate}">
+              <div class="metric-bar" aria-label="${metric.category} 违规检出率 ${foundRate}">
                 <div class="bar-part bar-found" style="width:${foundRateValue * 100}%"></div>
                 <div class="bar-part bar-rest" style="width:${(1 - foundRateValue) * 100}%"></div>
               </div>

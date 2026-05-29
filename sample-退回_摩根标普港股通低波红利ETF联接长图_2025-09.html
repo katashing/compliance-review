@@ -963,7 +963,7 @@
           <div class="metric-headrow" aria-hidden="true">
             <span>审核类别</span>
             <span>审核点</span>
-            <span>检出率</span>
+            <span>违规检出率</span>
             <span>有效命中率</span>
           </div>
           <div class="metric-list" id="businessMetrics"></div>
@@ -1026,39 +1026,39 @@
           {
                 "category": "文件总计",
                 "totalAuditPoints": 1,
-                "aiFound": 0,
-                "aiChecked": 1,
-                "hitAuditPoints": 0,
+                "aiFound": 1,
+                "aiChecked": 2,
+                "hitAuditPoints": 1,
                 "foundRate": {
-                      "numerator": 0,
+                      "numerator": 1,
                       "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "value": 1,
+                      "percent": "100%"
                 },
                 "hitRate": {
-                      "numerator": 0,
-                      "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "numerator": 1,
+                      "denominator": 2,
+                      "value": 0.5,
+                      "percent": "50%"
                 }
           },
           {
                 "category": "上下文不一致",
                 "totalAuditPoints": 1,
-                "aiFound": 0,
-                "aiChecked": 1,
-                "hitAuditPoints": 0,
+                "aiFound": 1,
+                "aiChecked": 2,
+                "hitAuditPoints": 1,
                 "foundRate": {
-                      "numerator": 0,
+                      "numerator": 1,
                       "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "value": 1,
+                      "percent": "100%"
                 },
                 "hitRate": {
-                      "numerator": 0,
-                      "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "numerator": 1,
+                      "denominator": 2,
+                      "value": 0.5,
+                      "percent": "50%"
                 }
           }
     ];
@@ -1067,24 +1067,60 @@
           {
                 "id": "A1",
                 "title": "上下文不一致",
-                "original": "上方模块标题及图表标题写“今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍”，但同一图表横轴显示“近3年”，图表下方来源写“统计区间2022.9.1-2025.8.31”，时间口径不一致。",
+                "original": "第一部分模块标题写“过往上涨动力足！或适应不同市场行情”，图表标题写“今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍”，但图表横轴展示为“近3年”，图表下方来源又写“统计区间2022.9.1-2025.8.31”，与“今年以来”的时间口径不一致。",
                 "hit": "上下文不一致",
-                "rule": "材料中正文、图表标题、横轴、脚注、来源之间的时间口径必须一致；出现“今年以来”“近3年”等时间口径时，必须核对图表横轴、图表注释、脚注或来源是否为对应区间。",
-                "suggestion": "统一该图表标题、横轴和脚注来源的统计区间；如实际展示为近3年数据，应将“今年以来”改为与2022.9.1-2025.8.31一致的表述，或补充今年以来对应区间的数据和来源。",
+                "rule": "规则要求正文、图表标题、横轴、脚注或来源中的“今年以来”“近3年”等时间口径必须前后一致；图表标题写一个时间区间，横轴、脚注或来源显示另一个时间区间的，应判定为上下文不一致。",
+                "suggestion": "统一该图表标题、横轴和来源的统计区间；如实际展示2022.9.1-2025.8.31近3年数据，应将标题中的“今年以来”改为与近3年一致的表述，或补充今年以来对应区间的数据和脚注。",
                 "action": "退回修改",
                 "evidence": [
+                      "模块标题：过往上涨动力足！或适应不同市场行情",
                       "图表标题：今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍",
                       "横轴：近3年",
-                      "来源：统计区间2022.9.1-2025.8.31"
+                      "数据来源：Wind，统计区间2022.9.1-2025.8.31"
                 ],
                 "imageRef": "material_slice_01_y0-1800.png",
                 "boxInImage": {
-                      "left": 7,
+                      "left": 2,
                       "top": 48,
-                      "width": 86,
-                      "height": 34
+                      "width": 94,
+                      "height": 38
                 },
-                "box": { "left": 7, "top": 22.268041237113405, "width": 86, "height": 15.77319587628866 },
+                "box": { "left": 2, "top": 22.268041237113405, "width": 94, "height": 17.628865979381445 },
+                "matches": [
+                      "M1"
+                ],
+                "matchDetails": [
+                      {
+                            "manualId": "M1",
+                            "manualTitle": "上下文不一致",
+                            "score": 0.2738,
+                            "semanticScore": 0.2738,
+                            "positionIou": 0.7042,
+                            "method": "category-content-and-position"
+                      }
+                ]
+          },
+          {
+                "id": "A2",
+                "title": "上下文不一致",
+                "original": "“半年调仓更及时”部分正文写“标普港股通低波红利指数每年1月底、7月底调仓”，右侧红色表头却写“红利低波指数”，并标注“每半年(1月底、7月底)”和“2025年7月”；同一表格左侧又有“红利低波指数”列，显示“调仓频率：每年”“最近一次调仓：2024年12月”。同一指数名称“红利低波指数”在同一组件内出现不同调仓频率和最近调仓日期，且与正文所称“标普港股通低波红利指数”名称不一致。",
+                "hit": "上下文不一致",
+                "rule": "规则要求同一指数、同一指标、同一统计区间在不同位置的数值和口径必须一致，指数名称也必须前后一致；同一指数出现不同调仓频率、日期或正文与图表指数名称无法对应的，应判定为上下文不一致。",
+                "suggestion": "复核右侧红色表头对应的指数名称，将其明确改为“标普港股通低波红利指数”或其他准确全称，并统一表格中“红利低波指数”的调仓频率和最近一次调仓日期，避免同名指数对应不同口径。",
+                "action": "退回修改",
+                "evidence": [
+                      "正文：标普港股通低波红利指数每年1月底、7月底调仓",
+                      "左侧表格：红利低波指数；调仓频率 每年；最近一次调仓 2024年12月",
+                      "右侧红色表头：红利低波指数；每半年(1月底、7月底)；2025年7月"
+                ],
+                "imageRef": "material_slice_03_y3000-3880.png",
+                "boxInImage": {
+                      "left": 5,
+                      "top": 2,
+                      "width": 90,
+                      "height": 40
+                },
+                "box": { "left": 5, "top": 77.77319587628865, "width": 90, "height": 9.072164948453608 },
                 "matches": [],
                 "matchDetails": []
           }
@@ -1149,7 +1185,7 @@ function formatRate(numerator, denominator) {
             </div>
             <div class="metric-item">
               <div class="metric-value"><strong>${foundRate}</strong><span>${metric.aiFound}/${metric.totalAuditPoints}</span></div>
-              <div class="metric-bar" aria-label="${metric.category} 检出率 ${foundRate}">
+              <div class="metric-bar" aria-label="${metric.category} 违规检出率 ${foundRate}">
                 <div class="bar-part bar-found" style="width:${foundRateValue * 100}%"></div>
                 <div class="bar-part bar-rest" style="width:${(1 - foundRateValue) * 100}%"></div>
               </div>

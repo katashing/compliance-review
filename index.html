@@ -514,6 +514,10 @@
       color: var(--accent);
     }
 
+    .sort-button.active {
+      color: var(--accent);
+    }
+
     .empty {
       padding: 22px;
       background: var(--panel);
@@ -593,7 +597,7 @@
         <div class="metric-headrow">
           <button class="sort-button metric-sort-button" type="button" data-metric-sort="category">审核类别</button>
           <button class="sort-button metric-sort-button" type="button" data-metric-sort="totalAuditPoints">审核点</button>
-          <button class="sort-button metric-sort-button active" type="button" data-metric-sort="foundRate">检出率</button>
+          <button class="sort-button metric-sort-button active" type="button" data-metric-sort="foundRate">违规检出率</button>
           <button class="sort-button metric-sort-button" type="button" data-metric-sort="hitRate">有效命中率</button>
         </div>
         <div class="metric-list" id="businessMetrics"></div>
@@ -609,7 +613,7 @@
           <button class="sort-button" type="button" data-sort="verdict">AI结论</button>
           <button class="sort-button" type="button" data-sort="manualVerdict">人工结论</button>
           <button class="sort-button" type="button" data-sort="issues">审核点</button>
-          <button class="sort-button" type="button" data-sort="foundRate">检出率</button>
+          <button class="sort-button" type="button" data-sort="foundRate">违规检出率</button>
           <button class="sort-button" type="button" data-sort="hitRate">有效命中率</button>
           <button class="sort-button active" type="button" data-sort="date">上传日期</button>
           <span>操作</span>
@@ -686,20 +690,20 @@
                 "metricTotal": {
                       "category": "文件总计",
                       "totalAuditPoints": 1,
-                      "aiFound": 0,
-                      "aiChecked": 1,
-                      "hitAuditPoints": 0,
+                      "aiFound": 1,
+                      "aiChecked": 2,
+                      "hitAuditPoints": 1,
                       "foundRate": {
-                            "numerator": 0,
+                            "numerator": 1,
                             "denominator": 1,
-                            "value": 0,
-                            "percent": "0%"
+                            "value": 1,
+                            "percent": "100%"
                       },
                       "hitRate": {
-                            "numerator": 0,
-                            "denominator": 1,
-                            "value": 0,
-                            "percent": "0%"
+                            "numerator": 1,
+                            "denominator": 2,
+                            "value": 0.5,
+                            "percent": "50%"
                       }
                 },
                 "metrics": [],
@@ -714,41 +718,41 @@
           "overall": {
                 "category": "文件总计",
                 "totalAuditPoints": 2,
-                "aiFound": 1,
-                "aiChecked": 2,
-                "hitAuditPoints": 1,
+                "aiFound": 2,
+                "aiChecked": 3,
+                "hitAuditPoints": 2,
                 "foundRate": {
-                      "numerator": 1,
+                      "numerator": 2,
                       "denominator": 2,
-                      "value": 0.5,
-                      "percent": "50%"
+                      "value": 1,
+                      "percent": "100%"
                 },
                 "hitRate": {
-                      "numerator": 1,
-                      "denominator": 2,
-                      "value": 0.5,
-                      "percent": "50%"
+                      "numerator": 2,
+                      "denominator": 3,
+                      "value": 0.6666666666666666,
+                      "percent": "67%"
                 }
           },
           "byCategory": [
                 {
                       "category": "上下文不一致",
                       "totalAuditPoints": 2,
-                      "aiFound": 1,
-                      "aiChecked": 2,
-                      "hitAuditPoints": 1,
+                      "aiFound": 2,
+                      "aiChecked": 3,
+                      "hitAuditPoints": 2,
                       "sampleCount": 2,
                       "foundRate": {
-                            "numerator": 1,
+                            "numerator": 2,
                             "denominator": 2,
-                            "value": 0.5,
-                            "percent": "50%"
+                            "value": 1,
+                            "percent": "100%"
                       },
                       "hitRate": {
-                            "numerator": 1,
-                            "denominator": 2,
-                            "value": 0.5,
-                            "percent": "50%"
+                            "numerator": 2,
+                            "denominator": 3,
+                            "value": 0.6666666666666666,
+                            "percent": "67%"
                       }
                 }
           ],
@@ -761,40 +765,40 @@
                       {
                             "category": "文件总计",
                             "totalAuditPoints": 2,
-                            "aiFound": 1,
-                            "aiChecked": 2,
-                            "hitAuditPoints": 1,
+                            "aiFound": 2,
+                            "aiChecked": 3,
+                            "hitAuditPoints": 2,
                             "foundRate": {
-                                  "numerator": 1,
+                                  "numerator": 2,
                                   "denominator": 2,
-                                  "value": 0.5,
-                                  "percent": "50%"
+                                  "value": 1,
+                                  "percent": "100%"
                             },
                             "hitRate": {
-                                  "numerator": 1,
-                                  "denominator": 2,
-                                  "value": 0.5,
-                                  "percent": "50%"
+                                  "numerator": 2,
+                                  "denominator": 3,
+                                  "value": 0.6666666666666666,
+                                  "percent": "67%"
                             }
                       },
                       {
                             "category": "上下文不一致",
                             "totalAuditPoints": 2,
-                            "aiFound": 1,
-                            "aiChecked": 2,
-                            "hitAuditPoints": 1,
+                            "aiFound": 2,
+                            "aiChecked": 3,
+                            "hitAuditPoints": 2,
                             "sampleCount": 2,
                             "foundRate": {
-                                  "numerator": 1,
+                                  "numerator": 2,
                                   "denominator": 2,
-                                  "value": 0.5,
-                                  "percent": "50%"
+                                  "value": 1,
+                                  "percent": "100%"
                             },
                             "hitRate": {
-                                  "numerator": 1,
-                                  "denominator": 2,
-                                  "value": 0.5,
-                                  "percent": "50%"
+                                  "numerator": 2,
+                                  "denominator": 3,
+                                  "value": 0.6666666666666666,
+                                  "percent": "67%"
                             }
                       }
                 ],
@@ -828,20 +832,20 @@
                             "overall": {
                                   "category": "文件总计",
                                   "totalAuditPoints": 1,
-                                  "aiFound": 0,
-                                  "aiChecked": 1,
-                                  "hitAuditPoints": 0,
+                                  "aiFound": 1,
+                                  "aiChecked": 2,
+                                  "hitAuditPoints": 1,
                                   "foundRate": {
-                                        "numerator": 0,
+                                        "numerator": 1,
                                         "denominator": 1,
-                                        "value": 0,
-                                        "percent": "0%"
+                                        "value": 1,
+                                        "percent": "100%"
                                   },
                                   "hitRate": {
-                                        "numerator": 0,
-                                        "denominator": 1,
-                                        "value": 0,
-                                        "percent": "0%"
+                                        "numerator": 1,
+                                        "denominator": 2,
+                                        "value": 0.5,
+                                        "percent": "50%"
                                   }
                             }
                       }
@@ -899,44 +903,44 @@
                       "overall": {
                             "category": "文件总计",
                             "totalAuditPoints": 1,
-                            "aiFound": 0,
-                            "aiChecked": 1,
-                            "hitAuditPoints": 0,
+                            "aiFound": 1,
+                            "aiChecked": 2,
+                            "hitAuditPoints": 1,
                             "foundRate": {
-                                  "numerator": 0,
+                                  "numerator": 1,
                                   "denominator": 1,
-                                  "value": 0,
-                                  "percent": "0%"
+                                  "value": 1,
+                                  "percent": "100%"
                             },
                             "hitRate": {
-                                  "numerator": 0,
-                                  "denominator": 1,
-                                  "value": 0,
-                                  "percent": "0%"
+                                  "numerator": 1,
+                                  "denominator": 2,
+                                  "value": 0.5,
+                                  "percent": "50%"
                             }
                       },
                       "metrics": [
                             {
                                   "category": "上下文不一致",
                                   "totalAuditPoints": 1,
-                                  "aiFound": 0,
-                                  "aiChecked": 1,
-                                  "hitAuditPoints": 0,
+                                  "aiFound": 1,
+                                  "aiChecked": 2,
+                                  "hitAuditPoints": 1,
                                   "foundRate": {
-                                        "numerator": 0,
+                                        "numerator": 1,
                                         "denominator": 1,
-                                        "value": 0,
-                                        "percent": "0%"
+                                        "value": 1,
+                                        "percent": "100%"
                                   },
                                   "hitRate": {
-                                        "numerator": 0,
-                                        "denominator": 1,
-                                        "value": 0,
-                                        "percent": "0%"
+                                        "numerator": 1,
+                                        "denominator": 2,
+                                        "value": 0.5,
+                                        "percent": "50%"
                                   }
                             }
                       ],
-                      "matchCount": 0
+                      "matchCount": 1
                 }
           ]
     };
@@ -1059,7 +1063,7 @@
           </div>
           <div class="metric-item">
             <div class="metric-value"><strong>${foundRate}</strong><span>${metric.aiFound}/${metric.totalAuditPoints}</span></div>
-            <div class="metric-bar" aria-label="${metric.category} 检出率 ${foundRate}">
+            <div class="metric-bar" aria-label="${metric.category} 违规检出率 ${foundRate}">
               <div class="bar-part bar-found" style="width:${foundRateValue * 100}%"></div>
               <div class="bar-part bar-rest" style="width:${(1 - foundRateValue) * 100}%"></div>
             </div>
