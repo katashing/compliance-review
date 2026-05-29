@@ -510,6 +510,10 @@
       color: var(--accent);
     }
 
+    .sort-button.active {
+      color: var(--accent);
+    }
+
     .empty {
       padding: 22px;
       background: var(--panel);
@@ -639,8 +643,8 @@
                 "id": "退回_华泰柏瑞通用航空长图_2025-08",
                 "title": "退-华泰柏瑞通用航空长图",
                 "type": "图片长图",
-                "verdict": "通过",
-                "verdictClass": "pass",
+                "verdict": "退回",
+                "verdictClass": "reject",
                 "manualVerdict": "退回",
                 "manualVerdictClass": "reject",
                 "date": "2025-08",
@@ -648,24 +652,24 @@
                 "metricTotal": {
                       "category": "文件总计",
                       "totalAuditPoints": 1,
-                      "aiFound": 0,
-                      "aiChecked": 0,
-                      "hitAuditPoints": 0,
+                      "aiFound": 1,
+                      "aiChecked": 1,
+                      "hitAuditPoints": 1,
                       "foundRate": {
-                            "numerator": 0,
+                            "numerator": 1,
                             "denominator": 1,
-                            "value": 0,
-                            "percent": "0%"
+                            "value": 1,
+                            "percent": "100%"
                       },
                       "hitRate": {
-                            "numerator": 0,
-                            "denominator": 0,
-                            "value": null,
-                            "percent": "-"
+                            "numerator": 1,
+                            "denominator": 1,
+                            "value": 1,
+                            "percent": "100%"
                       }
                 },
                 "metrics": [],
-                "description": "业务人工审核指出材料图文及上下文表述的时间区间不一致。",
+                "description": "业务人工审核指出材料图表标题、脚注与横轴时间区间不一致。",
                 "thumb": "assets/samples/退回_华泰柏瑞通用航空长图_2026-02-04/material.png",
                 "href": "sample-退回_华泰柏瑞通用航空长图_2025-08.html"
           },
@@ -682,20 +686,20 @@
                 "metricTotal": {
                       "category": "文件总计",
                       "totalAuditPoints": 1,
-                      "aiFound": 1,
+                      "aiFound": 0,
                       "aiChecked": 1,
-                      "hitAuditPoints": 1,
+                      "hitAuditPoints": 0,
                       "foundRate": {
-                            "numerator": 1,
+                            "numerator": 0,
                             "denominator": 1,
-                            "value": 1,
-                            "percent": "100%"
+                            "value": 0,
+                            "percent": "0%"
                       },
                       "hitRate": {
-                            "numerator": 1,
+                            "numerator": 0,
                             "denominator": 1,
-                            "value": 1,
-                            "percent": "100%"
+                            "value": 0,
+                            "percent": "0%"
                       }
                 },
                 "metrics": [],
@@ -711,7 +715,7 @@
                 "category": "文件总计",
                 "totalAuditPoints": 2,
                 "aiFound": 1,
-                "aiChecked": 1,
+                "aiChecked": 2,
                 "hitAuditPoints": 1,
                 "foundRate": {
                       "numerator": 1,
@@ -721,9 +725,9 @@
                 },
                 "hitRate": {
                       "numerator": 1,
-                      "denominator": 1,
-                      "value": 1,
-                      "percent": "100%"
+                      "denominator": 2,
+                      "value": 0.5,
+                      "percent": "50%"
                 }
           },
           "byCategory": [
@@ -731,7 +735,7 @@
                       "category": "上下文不一致",
                       "totalAuditPoints": 2,
                       "aiFound": 1,
-                      "aiChecked": 1,
+                      "aiChecked": 2,
                       "hitAuditPoints": 1,
                       "sampleCount": 2,
                       "foundRate": {
@@ -742,9 +746,9 @@
                       },
                       "hitRate": {
                             "numerator": 1,
-                            "denominator": 1,
-                            "value": 1,
-                            "percent": "100%"
+                            "denominator": 2,
+                            "value": 0.5,
+                            "percent": "50%"
                       }
                 }
           ],
@@ -758,7 +762,7 @@
                             "category": "文件总计",
                             "totalAuditPoints": 2,
                             "aiFound": 1,
-                            "aiChecked": 1,
+                            "aiChecked": 2,
                             "hitAuditPoints": 1,
                             "foundRate": {
                                   "numerator": 1,
@@ -768,16 +772,16 @@
                             },
                             "hitRate": {
                                   "numerator": 1,
-                                  "denominator": 1,
-                                  "value": 1,
-                                  "percent": "100%"
+                                  "denominator": 2,
+                                  "value": 0.5,
+                                  "percent": "50%"
                             }
                       },
                       {
                             "category": "上下文不一致",
                             "totalAuditPoints": 2,
                             "aiFound": 1,
-                            "aiChecked": 1,
+                            "aiChecked": 2,
                             "hitAuditPoints": 1,
                             "sampleCount": 2,
                             "foundRate": {
@@ -788,9 +792,9 @@
                             },
                             "hitRate": {
                                   "numerator": 1,
-                                  "denominator": 1,
-                                  "value": 1,
-                                  "percent": "100%"
+                                  "denominator": 2,
+                                  "value": 0.5,
+                                  "percent": "50%"
                             }
                       }
                 ],
@@ -798,29 +802,6 @@
                       {
                             "id": "退回_华泰柏瑞通用航空长图_2025-08",
                             "title": "退-华泰柏瑞通用航空长图",
-                            "overall": {
-                                  "category": "文件总计",
-                                  "totalAuditPoints": 1,
-                                  "aiFound": 0,
-                                  "aiChecked": 0,
-                                  "hitAuditPoints": 0,
-                                  "foundRate": {
-                                        "numerator": 0,
-                                        "denominator": 1,
-                                        "value": 0,
-                                        "percent": "0%"
-                                  },
-                                  "hitRate": {
-                                        "numerator": 0,
-                                        "denominator": 0,
-                                        "value": null,
-                                        "percent": "-"
-                                  }
-                            }
-                      },
-                      {
-                            "id": "退回_摩根标普港股通低波红利ETF联接长图_2025-09",
-                            "title": "退-摩根标普港股通低波红利ETF联接长图",
                             "overall": {
                                   "category": "文件总计",
                                   "totalAuditPoints": 1,
@@ -840,38 +821,15 @@
                                         "percent": "100%"
                                   }
                             }
-                      }
-                ]
-          },
-          "samples": [
-                {
-                      "id": "退回_华泰柏瑞通用航空长图_2025-08",
-                      "title": "退-华泰柏瑞通用航空长图",
-                      "overall": {
-                            "category": "文件总计",
-                            "totalAuditPoints": 1,
-                            "aiFound": 0,
-                            "aiChecked": 0,
-                            "hitAuditPoints": 0,
-                            "foundRate": {
-                                  "numerator": 0,
-                                  "denominator": 1,
-                                  "value": 0,
-                                  "percent": "0%"
-                            },
-                            "hitRate": {
-                                  "numerator": 0,
-                                  "denominator": 0,
-                                  "value": null,
-                                  "percent": "-"
-                            }
                       },
-                      "metrics": [
-                            {
-                                  "category": "上下文不一致",
+                      {
+                            "id": "退回_摩根标普港股通低波红利ETF联接长图_2025-09",
+                            "title": "退-摩根标普港股通低波红利ETF联接长图",
+                            "overall": {
+                                  "category": "文件总计",
                                   "totalAuditPoints": 1,
                                   "aiFound": 0,
-                                  "aiChecked": 0,
+                                  "aiChecked": 1,
                                   "hitAuditPoints": 0,
                                   "foundRate": {
                                         "numerator": 0,
@@ -881,17 +839,18 @@
                                   },
                                   "hitRate": {
                                         "numerator": 0,
-                                        "denominator": 0,
-                                        "value": null,
-                                        "percent": "-"
+                                        "denominator": 1,
+                                        "value": 0,
+                                        "percent": "0%"
                                   }
                             }
-                      ],
-                      "matchCount": 0
-                },
+                      }
+                ]
+          },
+          "samples": [
                 {
-                      "id": "退回_摩根标普港股通低波红利ETF联接长图_2025-09",
-                      "title": "退-摩根标普港股通低波红利ETF联接长图",
+                      "id": "退回_华泰柏瑞通用航空长图_2025-08",
+                      "title": "退-华泰柏瑞通用航空长图",
                       "overall": {
                             "category": "文件总计",
                             "totalAuditPoints": 1,
@@ -933,6 +892,51 @@
                             }
                       ],
                       "matchCount": 1
+                },
+                {
+                      "id": "退回_摩根标普港股通低波红利ETF联接长图_2025-09",
+                      "title": "退-摩根标普港股通低波红利ETF联接长图",
+                      "overall": {
+                            "category": "文件总计",
+                            "totalAuditPoints": 1,
+                            "aiFound": 0,
+                            "aiChecked": 1,
+                            "hitAuditPoints": 0,
+                            "foundRate": {
+                                  "numerator": 0,
+                                  "denominator": 1,
+                                  "value": 0,
+                                  "percent": "0%"
+                            },
+                            "hitRate": {
+                                  "numerator": 0,
+                                  "denominator": 1,
+                                  "value": 0,
+                                  "percent": "0%"
+                            }
+                      },
+                      "metrics": [
+                            {
+                                  "category": "上下文不一致",
+                                  "totalAuditPoints": 1,
+                                  "aiFound": 0,
+                                  "aiChecked": 1,
+                                  "hitAuditPoints": 0,
+                                  "foundRate": {
+                                        "numerator": 0,
+                                        "denominator": 1,
+                                        "value": 0,
+                                        "percent": "0%"
+                                  },
+                                  "hitRate": {
+                                        "numerator": 0,
+                                        "denominator": 1,
+                                        "value": 0,
+                                        "percent": "0%"
+                                  }
+                            }
+                      ],
+                      "matchCount": 0
                 }
           ]
     };

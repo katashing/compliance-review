@@ -1026,39 +1026,39 @@
           {
                 "category": "文件总计",
                 "totalAuditPoints": 1,
-                "aiFound": 1,
+                "aiFound": 0,
                 "aiChecked": 1,
-                "hitAuditPoints": 1,
+                "hitAuditPoints": 0,
                 "foundRate": {
-                      "numerator": 1,
+                      "numerator": 0,
                       "denominator": 1,
-                      "value": 1,
-                      "percent": "100%"
+                      "value": 0,
+                      "percent": "0%"
                 },
                 "hitRate": {
-                      "numerator": 1,
+                      "numerator": 0,
                       "denominator": 1,
-                      "value": 1,
-                      "percent": "100%"
+                      "value": 0,
+                      "percent": "0%"
                 }
           },
           {
                 "category": "上下文不一致",
                 "totalAuditPoints": 1,
-                "aiFound": 1,
+                "aiFound": 0,
                 "aiChecked": 1,
-                "hitAuditPoints": 1,
+                "hitAuditPoints": 0,
                 "foundRate": {
-                      "numerator": 1,
+                      "numerator": 0,
                       "denominator": 1,
-                      "value": 1,
-                      "percent": "100%"
+                      "value": 0,
+                      "percent": "0%"
                 },
                 "hitRate": {
-                      "numerator": 1,
+                      "numerator": 0,
                       "denominator": 1,
-                      "value": 1,
-                      "percent": "100%"
+                      "value": 0,
+                      "percent": "0%"
                 }
           }
     ];
@@ -1067,25 +1067,26 @@
           {
                 "id": "A1",
                 "title": "上下文不一致",
-                "original": "中部图表标题为“今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍”，但图表横轴三组均标注为“近3年”，脚注又写明“截至区间2022.9.1-2025.8.31”，标题的“今年以来”与图表/脚注展示的统计区间不一致。",
+                "original": "上方模块标题及图表标题写“今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍”，但同一图表横轴显示“近3年”，图表下方来源写“统计区间2022.9.1-2025.8.31”，时间口径不一致。",
                 "hit": "上下文不一致",
-                "rule": "材料中的标题、图表、脚注、数据来源等应保持上下文一致；数据口径、统计区间、来源说明与正文结论应一致。",
-                "suggestion": "请统一该图表的标题、横轴和脚注统计区间；如表达“今年以来”，应补充今年以来对应数据和截至日期；如使用2022.9.1-2025.8.31区间，应调整标题表述。",
+                "rule": "材料中正文、图表标题、横轴、脚注、来源之间的时间口径必须一致；出现“今年以来”“近3年”等时间口径时，必须核对图表横轴、图表注释、脚注或来源是否为对应区间。",
+                "suggestion": "统一该图表标题、横轴和脚注来源的统计区间；如实际展示为近3年数据，应将“今年以来”改为与2022.9.1-2025.8.31一致的表述，或补充今年以来对应区间的数据和来源。",
                 "action": "退回修改",
-                "box": { "left": 8, "top": 23, "width": 85, "height": 20 },
-                "matches": [
-                      "M1"
+                "evidence": [
+                      "图表标题：今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍",
+                      "横轴：近3年",
+                      "来源：统计区间2022.9.1-2025.8.31"
                 ],
-                "matchDetails": [
-                      {
-                            "manualId": "M1",
-                            "manualTitle": "上下文不一致",
-                            "score": 0.2749,
-                            "semanticScore": 0.2749,
-                            "positionIou": 0.5869,
-                            "method": "category-content-and-position"
-                      }
-                ]
+                "imageRef": "material_slice_01_y0-1800.png",
+                "boxInImage": {
+                      "left": 7,
+                      "top": 48,
+                      "width": 86,
+                      "height": 34
+                },
+                "box": { "left": 7, "top": 22.268041237113405, "width": 86, "height": 15.77319587628866 },
+                "matches": [],
+                "matchDetails": []
           }
     ];
 
@@ -1095,7 +1096,7 @@
                 "title": "上下文不一致",
                 "original": "该材料为2025年9月提审。文字表述写的是“今年以来”，但未见今年以来的数据；图表中全部标注的是“近3年”，且同一指数同一时期数据却不同。",
                 "suggestion": "统一正文和图表的数据区间；如使用“今年以来”，应补充今年以来数据；如使用“近3年”，正文表述也应同步调整，并核对同一指数同一时期的数据口径。",
-                "box": { "left": 7, "top": 13.5, "width": 86, "height": 27 }
+                "box": { "left": 4.667038690476191, "top": 21.99929526316168, "width": 91.19047619047619, "height": 13.2548055142062 }
           }
     ];
 

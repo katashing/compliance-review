@@ -974,7 +974,7 @@
       <section class="review-panel active" id="aiPanel" data-review-mode="ai" tabindex="0" aria-label="AI审核区域">
         <div class="review-panel-head">
           <div>
-            <h3>AI审核：<span class="panel-verdict pass">通过</span>，<span id="aiCount">0项</span></h3>
+            <h3>AI审核：<span class="panel-verdict reject">退回</span>，<span id="aiCount">0项</span></h3>
             <p>点击本区域显示 AI 审核点标注。</p>
           </div>
         </div>
@@ -1026,52 +1026,89 @@
           {
                 "category": "文件总计",
                 "totalAuditPoints": 1,
-                "aiFound": 0,
-                "aiChecked": 0,
-                "hitAuditPoints": 0,
+                "aiFound": 1,
+                "aiChecked": 1,
+                "hitAuditPoints": 1,
                 "foundRate": {
-                      "numerator": 0,
+                      "numerator": 1,
                       "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "value": 1,
+                      "percent": "100%"
                 },
                 "hitRate": {
-                      "numerator": 0,
-                      "denominator": 0,
-                      "value": null,
-                      "percent": "-"
+                      "numerator": 1,
+                      "denominator": 1,
+                      "value": 1,
+                      "percent": "100%"
                 }
           },
           {
                 "category": "上下文不一致",
                 "totalAuditPoints": 1,
-                "aiFound": 0,
-                "aiChecked": 0,
-                "hitAuditPoints": 0,
+                "aiFound": 1,
+                "aiChecked": 1,
+                "hitAuditPoints": 1,
                 "foundRate": {
-                      "numerator": 0,
+                      "numerator": 1,
                       "denominator": 1,
-                      "value": 0,
-                      "percent": "0%"
+                      "value": 1,
+                      "percent": "100%"
                 },
                 "hitRate": {
-                      "numerator": 0,
-                      "denominator": 0,
-                      "value": null,
-                      "percent": "-"
+                      "numerator": 1,
+                      "denominator": 1,
+                      "value": 1,
+                      "percent": "100%"
                 }
           }
     ];
 
-    const items = [];
+    const items = [
+          {
+                "id": "A1",
+                "title": "上下文不一致",
+                "original": "“创新加速 成长先锋”模块中，正文写“通用航空指数基日（2020/12/31）以来表现”，图表标题为“通用航空指数基日以来表现”，脚注标注“数据来源：Wind，20/12/31-25/7/31”，但图表横轴实际可见起点为“2024/7/25”，未覆盖指数基日2020/12/31至截至日2025/7/31的完整区间。",
+                "hit": "上下文不一致",
+                "rule": "材料出现“基日以来”且列出指数基日、统计起止日期或截至日时，图表横轴必须覆盖对应起始日至截至日的完整区间；否则属于时间口径不一致。",
+                "suggestion": "统一正文、图表标题、横轴和脚注的统计区间：如保留“基日以来”，应补充覆盖2020/12/31至2025/7/31的完整走势图；如仅展示现有横轴区间，应将正文和图表标题改为与现有图表一致的区间。",
+                "action": "退回修改",
+                "evidence": [
+                      "正文：通用航空指数基日（2020/12/31）以来表现",
+                      "图表标题：通用航空指数基日以来表现",
+                      "横轴可见日期：2024/7/25、2024/9/25、2025/1/25、2025/3/25、2025/5/25、2025/7/25",
+                      "脚注：数据来源：Wind，20/12/31-25/7/31"
+                ],
+                "imageRef": "material_slice_03_y3000-4800.png",
+                "boxInImage": {
+                      "left": 6,
+                      "top": 36,
+                      "width": 88,
+                      "height": 27
+                },
+                "box": { "left": 6, "top": 45.6, "width": 88, "height": 6.075 },
+                "matches": [
+                      "M1"
+                ],
+                "matchDetails": [
+                      {
+                            "manualId": "M1",
+                            "manualTitle": "上下文不一致",
+                            "score": 0.8151,
+                            "semanticScore": 0.8151,
+                            "positionIou": 0.4832,
+                            "method": "category-content-and-position"
+                      }
+                ]
+          }
+    ];
 
     const manualAnnotations = [
           {
                 "id": "M1",
                 "title": "上下文不一致",
-                "original": "该材料2025年8月提审，图文及上下文表述的时间区间不一致。上下文结合，走势图应该要列出2020年以来的走势图。",
-                "suggestion": "统一图文与上下文时间区间；如正文语义覆盖2020年以来，应补充2020年以来走势图，或将正文表述调整为与现有走势图一致的区间。",
-                "box": { "left": 3, "top": 21.62, "width": 94, "height": 8.58 }
+                "original": "材料图表标题写“通用航空指数基日以来表现”，并标注基日为“2020/12/31”；图表下方脚注写“20/12/31-25/7/31”。但该走势图横轴实际展示区间约为“2024/7/25”至“2025/7/25”，没有覆盖2020/12/31以来至2025/7/31的完整区间，标题、脚注与图表横轴时间口径不一致。",
+                "suggestion": "统一“基日以来”表述、脚注统计区间和走势图横轴区间；如保留“基日以来”口径，应补充2020/12/31至2025/7/31的完整走势图；如只展示2024/7/25至2025/7/25附近的一年区间，应调整标题和脚注，避免使用“基日以来”及“20/12/31-25/7/31”口径。",
+                "box": { "left": 4.667038690476191, "top": 44.214849238084945, "width": 92.26190476190476, "height": 5.109694153247595 }
           }
     ];
 
