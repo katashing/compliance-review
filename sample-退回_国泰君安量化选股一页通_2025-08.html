@@ -1,0 +1,1937 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>退-250827国泰君安量化选股一页通 - 合规审核结果样例</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #607086;
+      --line: #dce4ef;
+      --accent: #0f83d8;
+      --danger: #df2b32;
+      --warn: #b76a00;
+      --ok: #1f8a5b;
+      --shadow: 0 12px 34px rgba(32, 48, 72, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(300px, 34vw) minmax(620px, 1fr);
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .image-pane {
+      min-width: 0;
+      min-height: 0;
+      padding: 20px;
+      background: #eaf2fb;
+      border-right: 1px solid var(--line);
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 14px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 11px;
+      color: var(--accent);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus-visible {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .stage {
+      min-height: 0;
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: #cfe8f7;
+      box-shadow: var(--shadow);
+      overscroll-behavior: contain;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
+    }
+
+    .stage {
+      cursor: grab;
+    }
+
+    .stage.dragging {
+      cursor: grabbing;
+      scroll-behavior: auto;
+      user-select: none;
+    }
+
+    .stage.dragging * {
+      cursor: grabbing !important;
+    }
+
+    .zoom-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-height: 34px;
+    }
+
+    .zoom-btn {
+      min-width: 34px;
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .zoom-btn:hover,
+    .zoom-btn:focus-visible {
+      border-color: var(--accent);
+      color: var(--accent);
+      outline: none;
+    }
+
+    .zoom-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .zoom-reset {
+      min-width: 54px;
+      font-size: 12px;
+    }
+
+    .zoom-level {
+      min-width: 54px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .image-wrap {
+      position: relative;
+      width: var(--image-width, 100%);
+      margin: 0 auto;
+      line-height: 0;
+    }
+
+    .image-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .mark {
+      position: absolute;
+      border: 4px solid var(--danger);
+      background: rgba(223, 43, 50, 0.03);
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    z-index: var(--mark-z, 10);
+    }
+
+    .mark.active {
+      border-color: #ffb000;
+      background: rgba(255, 176, 0, 0.12);
+      box-shadow: 0 0 0 5px rgba(255, 176, 0, 0.24);
+    z-index: 1000;
+    }
+
+    .mark-label {
+      position: absolute;
+      left: -1px;
+      top: -1px;
+      height: 33px;
+      min-width: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      background: var(--danger);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .mark.active .mark-label {
+      background: #ffb000;
+      color: #3a2500;
+    }
+
+    .mark.manual {
+      border-color: var(--accent);
+      background: rgba(15, 131, 216, 0.05);
+    }
+
+    .mark.manual .mark-label {
+      background: var(--accent);
+    }
+
+    .mark.manual.active {
+      border-color: #1f8a5b;
+      background: rgba(31, 138, 91, 0.12);
+      box-shadow: 0 0 0 5px rgba(31, 138, 91, 0.22);
+    }
+
+    .mark.manual.active .mark-label {
+      background: #1f8a5b;
+      color: #fff;
+    }
+
+    .draft-mark {
+      position: absolute;
+      border: 3px dashed var(--accent);
+      background: rgba(15, 131, 216, 0.10);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .image-wrap.selecting {
+      cursor: crosshair;
+      user-select: none;
+    }
+
+    .mark-note {
+      position: absolute;
+      left: 54px;
+      top: 6px;
+      max-width: min(440px, calc(100% - 62px));
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    transform: translateY(var(--mark-note-offset, 0));
+    }
+
+    .content-pane {
+      min-width: 0;
+      height: 100vh;
+      overflow: auto;
+      padding: 20px 22px 28px;
+      background: #f8fafc;
+    }
+
+    .review-workspace {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .review-panel {
+      box-sizing: border-box;
+      height: 100%;
+      align-content: start;
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+      max-height: calc(100vh - 450px);
+      min-height: 260px;
+      overflow: auto;
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(32, 48, 72, 0.06);
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .review-panel.active {
+      border-color: var(--accent);
+      box-shadow: 0 12px 28px rgba(15, 131, 216, 0.15);
+    }
+
+    .review-panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .review-panel-head h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .panel-verdict.reject {
+      color: #b81722;
+    }
+
+    .panel-verdict.pass {
+      color: #1f7650;
+    }
+
+    .review-panel-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .panel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .review-count {
+      min-width: 48px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .summary {
+      margin-bottom: 14px;
+      padding: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .summary-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .verdict {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: #fff0f1;
+      color: #b81722;
+      border: 1px solid #ffc7cc;
+      font-size: 14px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .verdict.reject {
+      color: #b81722;
+      background: #fff0f1;
+      border-color: #ffc7cc;
+    }
+
+    .verdict.pass {
+      color: #1f7650;
+      background: #ecfaf3;
+      border-color: #bce8cf;
+    }
+
+    .summary p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .stat {
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .metric-block {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+      overflow: hidden;
+    }
+    .material-facts {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+      overflow: hidden;
+    }
+
+    .fact-table-wrap {
+      overflow-x: auto;
+    }
+
+    .fact-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+    }
+
+    .fact-table th,
+    .fact-table td {
+      padding: 10px 14px;
+      border-top: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .fact-table th:last-child,
+    .fact-table td:last-child {
+      border-right: 0;
+    }
+
+    .fact-table th {
+      color: var(--muted);
+      background: #f9fcff;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .fact-table td {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+.metric-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: #f6faff;
+    }
+
+    .metric-title h3 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .metric-title span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .metric-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .metric-table th,
+    .metric-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .metric-table th {
+      color: var(--muted);
+      font-weight: 900;
+      background: #fff;
+      white-space: nowrap;
+    }
+
+    .metric-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .num {
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .metric-list {
+      display: grid;
+      gap: 0;
+      padding: 14px;
+    }
+
+    .metric-headrow {
+      display: grid;
+      grid-template-columns: minmax(170px, 1.15fr) 88px minmax(190px, 1fr) minmax(190px, 1fr);
+      gap: 12px;
+      padding: 10px 14px 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .metric-card {
+      display: grid;
+      grid-template-columns: minmax(170px, 1.15fr) 88px minmax(190px, 1fr) minmax(190px, 1fr);
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-bottom: 0;
+    }
+
+    .metric-card:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .metric-card.total {
+      background: #f3f8fc;
+      border-color: #c7d7e8;
+    }
+
+    .metric-card.total .metric-title strong,
+    .metric-card.total .metric-total strong,
+    .metric-card.total .metric-value strong {
+      color: var(--accent);
+    }
+
+    .metric-header {
+      min-width: 0;
+    }
+
+    .metric-title {
+      min-width: 0;
+    }
+
+    .metric-title strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .metric-title span {
+      display: none;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .metric-total {
+      min-width: 0;
+      padding: 0 8px;
+      text-align: center;
+    }
+
+    .metric-total strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .metric-total span {
+      display: none;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .metric-item {
+      min-width: 0;
+      padding: 0;
+    }
+
+    .metric-label {
+      display: none;
+      margin: 0;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.4;
+    }
+
+    .metric-label.found {
+      color: #1f8a5b;
+    }
+
+    .metric-label.hit {
+      color: #a66f00;
+    }
+
+    .metric-value {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 3px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-value strong {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .metric-value span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .metric-bar {
+      display: flex;
+      position: relative;
+      height: 8px;
+      margin-top: 7px;
+      overflow: hidden;
+      background: #eef3f8;
+      border-radius: 999px;
+    }
+
+    .bar-part {
+      min-width: 0;
+    }
+
+    .bar-found {
+      background: #1f8a5b;
+    }
+
+    .bar-rest {
+      background: #d7dee8;
+    }
+
+    .bar-hit {
+      background: #f1b51c;
+    }
+
+    .metric-help {
+      margin: 0;
+      padding: 10px 14px 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .metric-definitions {
+      display: none;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 0 14px 14px;
+    }
+
+    .metric-definition {
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .metric-definition strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .metric-definition code {
+      display: block;
+      margin-top: 7px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .metric-definition span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .cards {
+      margin-top: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .manual-panel {
+      gap: 14px;
+    }
+
+    .manual-form {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .manual-form.is-collapsed {
+      display: none;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .form-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-field label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      padding: 9px 10px;
+    }
+
+    .form-field textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .box-status {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .action-btn {
+      appearance: none;
+      min-height: 34px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .action-btn.primary {
+      color: #fff;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .action-btn.wide {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .action-btn.active {
+      color: #fff;
+      background: #1f8a5b;
+      border-color: #1f8a5b;
+    }
+
+    .action-btn.danger {
+      color: #fff;
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .manual-empty {
+      padding: 16px;
+      color: var(--muted);
+      background: var(--panel);
+      border: 1px dashed var(--line);
+      font-size: 14px;
+      line-height: 1.7;
+      min-height: clamp(260px, 34vh, 430px);
+      display: flex;
+      align-items: center;
+    }
+
+    .ai-empty {
+      padding: 16px;
+      color: var(--muted);
+      background: var(--panel);
+      border: 1px dashed var(--line);
+      font-size: 14px;
+      line-height: 1.7;
+      min-height: clamp(260px, 34vh, 430px);
+      display: flex;
+      align-items: center;
+    }
+
+    .card {
+      appearance: none;
+      display: block;
+      width: 100%;
+      padding: 0;
+      text-align: left;
+      color: inherit;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 24px rgba(32, 48, 72, 0.08);
+      cursor: pointer;
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .card:hover,
+    .card.active {
+      border-color: var(--accent);
+      box-shadow: 0 12px 28px rgba(15, 131, 216, 0.16);
+    }
+
+    .card.active {
+      transform: translateY(-1px);
+    }
+
+    .card-head {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .id {
+      width: 38px;
+      height: 30px;
+      display: inline-grid;
+      place-items: center;
+      background: var(--danger);
+      color: #fff;
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+.card-body {
+      padding: 14px 16px 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 5px;
+    }
+
+    .field dt {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .field dd {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .quote {
+      padding: 10px 12px;
+      background: #f5f8fc;
+      border-left: 3px solid var(--accent);
+      color: #34445b;
+    }
+
+    .suggestion {
+      color: #133a29;
+      background: #eefaf4;
+      border-left-color: var(--ok);
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        height: auto;
+        min-height: 100vh;
+        grid-template-columns: 1fr;
+        overflow: visible;
+      }
+
+      .image-pane {
+        height: 72vh;
+        min-height: 420px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .content-pane {
+        height: auto;
+        overflow: visible;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .image-pane,
+      .content-pane {
+        padding: 14px;
+      }
+
+      .topbar,
+      .summary-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .metric-card {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-headrow {
+        display: none;
+      }
+
+      .metric-item {
+        grid-template-columns: 64px 1fr;
+      }
+
+      .metric-definitions {
+        grid-template-columns: 1fr;
+      }
+
+      .review-workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .review-panel {
+        max-height: none;
+        overflow: visible;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-head {
+        grid-template-columns: auto 1fr;
+      }
+}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="image-pane" aria-label="原图审核标注">
+      <div class="topbar">
+        <div>
+          <h1>退-250827国泰君安量化选股一页通</h1>
+          <div class="meta"></div>
+        </div>
+        <div class="meta">
+          <a class="nav-link" href="index.html">返回首页</a>
+        </div>
+      </div>
+      <div class="zoom-toolbar" aria-label="原图缩放控制">
+        <button class="zoom-btn" type="button" id="zoomIn" title="放大">+</button>
+        <span class="zoom-level" id="zoomLevel">100%</span>
+        <button class="zoom-btn" type="button" id="zoomOut" title="缩小">-</button>
+        <button class="zoom-btn zoom-reset" type="button" id="zoomReset" title="重置缩放">重置</button>
+      </div>
+      <div class="stage" id="stage" tabindex="0">
+        <div class="image-wrap" id="imageWrap">
+          <img src="assets/samples/退回_国泰君安量化选股一页通_2025-08/material.png" alt="待审核长图原图" />
+        </div>
+      </div>
+    </section>
+
+    <section class="content-pane" aria-label="审核结果">
+      <section class="summary" aria-label="公共审核信息">
+        <div class="summary-head">
+          <div>
+            <h2>审核结论</h2>
+            
+          </div>
+          
+        </div>
+        <div class="material-facts" aria-label="材料事实">
+          <div class="metric-title">
+            <h3>材料事实</h3>
+            <span>仅展示已录入信息</span>
+          </div>
+          <div class="fact-table-wrap">
+            <table class="fact-table">
+              <thead>
+                <tr>
+                  <th>提审日期</th><th>产品名称</th><th>基金成立日</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+              <tr>
+                <td>2025-08-27</td><td>国泰君安量化选股</td><td>2022-08-18</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="metric-block" aria-label="业务关注指标">
+          <div class="metric-title">
+            <h3>业务指标</h3>
+            <span>与首页口径一致</span>
+          </div>
+          <div class="metric-headrow" aria-hidden="true">
+            <span>审核类别</span>
+            <span>审核点</span>
+            <span>违规检出率</span>
+            <span>有效命中率</span>
+          </div>
+          <div class="metric-list" id="businessMetrics"></div>
+        </div>
+      </section>
+
+      <div class="review-workspace" aria-label="审核区域">
+      <section class="review-panel active" id="aiPanel" data-review-mode="ai" tabindex="0" aria-label="AI审核区域">
+        <div class="review-panel-head">
+          <div>
+            <h3>AI审核：<span class="panel-verdict reject">退回</span>，<span id="aiCount">0项</span></h3>
+            <p>点击本区域显示 AI 审核点标注。</p>
+          </div>
+        </div>
+        <div class="cards" id="cards" aria-label="AI审核点列表"></div>
+      </section>
+
+      <section class="review-panel manual-panel" id="manualPanel" data-review-mode="manual" tabindex="0" aria-label="人工审核区域">
+        <div class="review-panel-head">
+          <div>
+            <h3>人工审核：<span class="panel-verdict reject">退回</span>，<span id="manualCount">0项</span></h3>
+            <p>点击本区域显示人工审核点标注。</p>
+          </div>
+          <div class="panel-actions">
+            <button class="action-btn" type="button" id="manualExport">导出结果</button>
+            <button class="action-btn primary" type="button" id="manualAdd">新增审核点</button>
+          </div>
+        </div>
+        <form class="manual-form is-collapsed" id="manualForm">
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="manualTitle">审核点</label>
+              <select id="manualTitle" name="title" required></select>
+            </div>
+            <div class="form-field full">
+              <label for="manualOriginal">问题描述</label>
+              <textarea id="manualOriginal" name="original" placeholder="说明材料中需要修改或复核的内容"></textarea>
+            </div>
+            <div class="form-field full">
+              <label for="manualSuggestion">修改建议</label>
+              <textarea id="manualSuggestion" name="suggestion" placeholder="给出业务审核建议"></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <p class="box-status" id="manualBoxStatus">未框选位置</p>
+            <button class="action-btn" type="button" id="manualBoxButton">框选位置</button>
+            <button class="action-btn" type="button" id="manualReset">清空</button>
+            <button class="action-btn" type="button" id="manualCollapse">收起</button>
+            <button class="action-btn primary" type="submit" id="manualSubmit">保存审核点</button>
+          </div>
+        </form>
+        <div class="cards" id="manualCards" aria-label="人工审核点列表"></div>
+      </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const businessMetrics = [
+          {
+                "category": "文件总计",
+                "totalAuditPoints": 2,
+                "aiFound": 2,
+                "aiChecked": 2,
+                "hitAuditPoints": 2,
+                "foundRate": {
+                      "numerator": 2,
+                      "denominator": 2,
+                      "value": 1,
+                      "percent": "100%"
+                },
+                "hitRate": {
+                      "numerator": 2,
+                      "denominator": 2,
+                      "value": 1,
+                      "percent": "100%"
+                }
+          },
+          {
+                "category": "业绩展示不符合外规要求",
+                "totalAuditPoints": 2,
+                "aiFound": 2,
+                "aiChecked": 2,
+                "hitAuditPoints": 2,
+                "foundRate": {
+                      "numerator": 2,
+                      "denominator": 2,
+                      "value": 1,
+                      "percent": "100%"
+                },
+                "hitRate": {
+                      "numerator": 2,
+                      "denominator": 2,
+                      "value": 1,
+                      "percent": "100%"
+                }
+          }
+    ];
+
+    const items = [
+          {
+                "id": "A1",
+                "title": "业绩展示不符合外规要求",
+                "original": "材料在“产品成立以来收益(%)”图表下方脚注中披露“国泰君安量化选股A/C类2022.8.18成立”，同时继续列示“2022年度收益为-4.95%/-5.09%”。该基金份额2022年度存续不足6个月，仍展示2022年度业绩，需修改。",
+                "hit": "业绩展示不符合外规要求",
+                "rule": "展示年度业绩时，需要查看成立日期，如果对应份额在该年度未成立，或未存续满6个月，不能展示年度业绩。",
+                "suggestion": "删除A/C份额2022年度收益展示，或改为成立以来等合规口径；如保留年度业绩，应仅展示存续满6个月后的完整年度业绩，并同步调整脚注说明。",
+                "action": "退回修改",
+                "evidence": [
+                      "产品成立以来收益(%)",
+                      "国泰君安量化选股A/C类2022.8.18成立",
+                      "2022年度收益为-4.95%/-5.09%"
+                ],
+                "imageRef": "material_slice_02_y1500-3300.png",
+                "boxInImage": {
+                      "left": 4,
+                      "top": 39,
+                      "width": 47,
+                      "height": 52
+                },
+                "box": { "left": 4, "top": 33.79373848987109, "width": 47, "height": 14.3646408839779 },
+                "matches": [
+                      "M1"
+                ],
+                "matchDetails": [
+                      {
+                            "manualId": "M1",
+                            "manualTitle": "业绩展示不符合外规要求",
+                            "score": 0.6244,
+                            "semanticScore": 0.6244,
+                            "positionIou": 0.2134,
+                            "method": "category-content-and-position"
+                      }
+                ]
+          },
+          {
+                "id": "A2",
+                "title": "业绩展示不符合外规要求",
+                "original": "材料右侧“国泰海通资管量化追求长期稳定超额”表格及下方脚注中，同样披露“国泰君安量化选股A/C类2022.8.18成立”，并列示“2022年度收益为-4.95%/-5.09%”。该年度基金份额存续不足6个月，不应展示2022年度业绩。",
+                "hit": "业绩展示不符合外规要求",
+                "rule": "展示年度业绩时，需要查看成立日期，如果对应份额在该年度未成立，或未存续满6个月，不能展示年度业绩。",
+                "suggestion": "删除该段脚注中的A/C份额2022年度收益，或调整为成立以来收益等合规口径；同步复核表格和脚注中其他成立不足6个月的年度业绩披露。",
+                "action": "退回修改",
+                "evidence": [
+                      "国泰海通资管量化追求长期稳定超额",
+                      "国泰君安量化选股A/C类2022.8.18成立",
+                      "2022年度收益为-4.95%/-5.09%"
+                ],
+                "imageRef": "material_slice_02_y1500-3300.png",
+                "boxInImage": {
+                      "left": 52,
+                      "top": 22,
+                      "width": 45,
+                      "height": 69
+                },
+                "box": { "left": 52, "top": 29.097605893186003, "width": 45, "height": 19.060773480662984 },
+                "matches": [
+                      "M2"
+                ],
+                "matchDetails": [
+                      {
+                            "manualId": "M2",
+                            "manualTitle": "业绩展示不符合外规要求",
+                            "score": 0.6704,
+                            "semanticScore": 0.6704,
+                            "positionIou": 0.4113,
+                            "method": "category-content-and-position"
+                      }
+                ]
+          }
+    ];
+
+    const manualAnnotations = [
+          {
+                "id": "M1",
+                "title": "业绩展示不符合外规要求",
+                "original": "该材料为2025年8月提审。左侧产品成立以来收益图下方脚注写明国泰君安量化选股A/C类2022年8月18日成立，并列示2022年度收益；该年度成立不足半年，不符合外规要求。",
+                "suggestion": "删除成立不足半年的2022年度业绩数据，并复核产品成立以来收益图及脚注中的业绩展示口径。",
+                "box": { "left": 2.1670386904761902, "top": 44.86845594685199, "width": 48.69047619047619, "height": 4.1343388117855895 }
+          },
+          {
+                "id": "M2",
+                "title": "业绩展示不符合外规要求",
+                "original": "该材料为2025年8月提审。右侧“国泰海通资管量化追求长期稳定超额”产品业绩表下方脚注写明多只量化产品成立日期并列示年度收益，其中：国泰君安中证1000指数增强A/C类2022.8.16成立，却列示2022年度收益-9.49%/-9.63%；国泰君安中证500指数增强A/C类2021.12.15成立，却列示2021年度收益1.49%/1.47%；国泰君安量化选股A/C类2022.8.18成立，却列示2022年度收益-4.95%/-5.09%；国泰君安科技创新精选三个月持有A/C类2022.11.16成立，却列示2022年度收益-3.81%/-3.87%。上述成立当年均未满半年，不符合年度业绩展示的外规要求。",
+                "suggestion": "删除上述产品在成立当年不满半年的年度业绩数据：国泰君安中证1000指数增强A/C类2022年度、国泰君安中证500指数增强A/C类2021年度、国泰君安量化选股A/C类2022年度、国泰君安科技创新精选三个月持有A/C类2022年度；并复核右侧业绩表及脚注中其他产品年度业绩是否满足成立或存续满半年要求。",
+                "box": { "left": 50.619419642857146, "top": 39.60261388131456, "width": 46.904761904761905, "height": 9.87889379237187 }
+          }
+    ];
+
+    const imageWrap = document.querySelector("#imageWrap");
+    const stage = document.querySelector("#stage");
+    const zoomOut = document.querySelector("#zoomOut");
+    const zoomIn = document.querySelector("#zoomIn");
+    const zoomReset = document.querySelector("#zoomReset");
+    const zoomLevel = document.querySelector("#zoomLevel");
+    const cards = document.querySelector("#cards");
+    const businessMetricRows = document.querySelector("#businessMetrics");
+    const reviewPanels = document.querySelectorAll(".review-panel");
+    const manualForm = document.querySelector("#manualForm");
+    const manualAdd = document.querySelector("#manualAdd");
+    const manualExport = document.querySelector("#manualExport");
+    const manualCards = document.querySelector("#manualCards");
+    const manualReset = document.querySelector("#manualReset");
+    const manualCollapse = document.querySelector("#manualCollapse");
+    const manualBoxButton = document.querySelector("#manualBoxButton");
+    const manualBoxStatus = document.querySelector("#manualBoxStatus");
+    const aiCount = document.querySelector("#aiCount");
+    const manualCount = document.querySelector("#manualCount");
+    const manualStoreKey = `manual-review-v3:${location.pathname}`;
+    const ruleOptions = [
+          "上下文不一致",
+          "业绩展示不符合外规要求"
+    ];
+    let manualItems = loadManualItems();
+    let editingManualId = null;
+    let activeReviewMode = "ai";
+    let pendingManualBox = null;
+    let selectingManualBox = false;
+    let draftMark = null;
+    let draftStart = null;
+    let imageZoom = 1;
+    let baseImageWidth = 0;
+    const minImageZoom = 0.5;
+    const maxImageZoom = 8;
+    const imageZoomStep = 0.25;
+    let imagePanStart = null;
+function formatRate(numerator, denominator) {
+      if (!denominator) return "-";
+      return `${Math.round((numerator / denominator) * 100)}%`;
+    }
+
+    function clampImageZoom(value) {
+      return Math.max(minImageZoom, Math.min(maxImageZoom, value));
+    }
+
+    function updateZoomButtons() {
+      if (!zoomLevel) return;
+      zoomLevel.textContent = `${Math.round(imageZoom * 100)}%`;
+      zoomOut.disabled = imageZoom <= minImageZoom;
+      zoomIn.disabled = imageZoom >= maxImageZoom;
+    }
+
+    function setImageZoom(nextZoom, options = {}) {
+      if (!baseImageWidth) {
+        baseImageWidth = imageWrap.getBoundingClientRect().width || stage.clientWidth || 420;
+      }
+      const previousWidth = Math.max(1, baseImageWidth * imageZoom);
+      const centerX = stage.scrollLeft + stage.clientWidth / 2;
+      const centerY = stage.scrollTop + stage.clientHeight / 2;
+      const ratioX = centerX / previousWidth;
+      const ratioY = centerY / Math.max(1, imageWrap.getBoundingClientRect().height);
+      imageZoom = clampImageZoom(nextZoom);
+      imageWrap.style.setProperty("--image-width", `${Math.round(baseImageWidth * imageZoom)}px`);
+      updateZoomButtons();
+      if (!options.resetScroll) {
+        requestAnimationFrame(() => {
+          stage.scrollLeft = Math.max(0, (baseImageWidth * imageZoom) * ratioX - stage.clientWidth / 2);
+          stage.scrollTop = Math.max(0, imageWrap.getBoundingClientRect().height * ratioY - stage.clientHeight / 2);
+        });
+      }
+    }
+
+    function resetImageZoom() {
+      setImageZoom(1, { resetScroll: true });
+      stage.scrollLeft = 0;
+    }
+
+    function initializeImageZoom() {
+      const image = imageWrap.querySelector("img");
+      const applyInitialWidth = () => {
+        imageWrap.style.removeProperty("--image-width");
+        baseImageWidth = imageWrap.getBoundingClientRect().width || stage.clientWidth || 420;
+        setImageZoom(1, { resetScroll: true });
+      };
+      if (image?.complete) {
+        applyInitialWidth();
+      } else {
+        image?.addEventListener("load", applyInitialWidth, { once: true });
+      }
+      zoomOut.addEventListener("click", () => setImageZoom(imageZoom - imageZoomStep));
+      zoomIn.addEventListener("click", () => setImageZoom(imageZoom + imageZoomStep));
+      zoomReset.addEventListener("click", resetImageZoom);
+    }
+
+    function canPanImage(event) {
+      if (selectingManualBox) return false;
+      if (event.target.closest(".mark, .draft-mark, button, a, input, textarea, select")) return false;
+      return stage.scrollWidth > stage.clientWidth || stage.scrollHeight > stage.clientHeight;
+    }
+
+    function startImagePan(event) {
+      if (!canPanImage(event)) return;
+      event.preventDefault();
+      imagePanStart = {
+        x: event.clientX,
+        y: event.clientY,
+        left: stage.scrollLeft,
+        top: stage.scrollTop
+      };
+      stage.classList.add("dragging");
+      stage.setPointerCapture?.(event.pointerId);
+    }
+
+    function moveImagePan(event) {
+      if (!imagePanStart) return;
+      event.preventDefault();
+      stage.scrollLeft = imagePanStart.left - (event.clientX - imagePanStart.x);
+      stage.scrollTop = imagePanStart.top - (event.clientY - imagePanStart.y);
+    }
+
+    function stopImagePan(event) {
+      if (!imagePanStart) return;
+      imagePanStart = null;
+      stage.classList.remove("dragging");
+      if (event?.pointerId !== undefined && stage.hasPointerCapture?.(event.pointerId)) {
+        stage.releasePointerCapture(event.pointerId);
+      }
+    }
+
+    function initializeImagePan() {
+      stage.addEventListener("pointerdown", startImagePan);
+      stage.addEventListener("pointermove", moveImagePan);
+      stage.addEventListener("pointerup", stopImagePan);
+      stage.addEventListener("pointercancel", stopImagePan);
+      stage.addEventListener("lostpointercapture", stopImagePan);
+    }
+
+    function renderBusinessMetrics() {
+      businessMetricRows.innerHTML = businessMetrics.map((metric) => {
+        const foundRateValue = metric.foundRate?.value ?? 0;
+        const hitRateValue = metric.hitRate?.value ?? 0;
+        const foundRate = metric.foundRate?.percent ?? formatRate(metric.aiFound, metric.totalAuditPoints);
+        const hitRate = metric.hitRate?.percent ?? formatRate(metric.hitAuditPoints, metric.aiChecked);
+
+        return `
+          <article class="metric-card ${metric.category === "文件总计" ? "total" : ""}">
+            <div class="metric-header">
+              <div class="metric-title">
+                <strong>${metric.category}</strong>
+              </div>
+            </div>
+            <div class="metric-total">
+              <strong>${metric.totalAuditPoints}</strong>
+              <span>审核点</span>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value"><strong>${foundRate}</strong><span>${metric.aiFound}/${metric.totalAuditPoints}</span></div>
+              <div class="metric-bar" aria-label="${metric.category} 违规检出率 ${foundRate}">
+                <div class="bar-part bar-found" style="width:${foundRateValue * 100}%"></div>
+                <div class="bar-part bar-rest" style="width:${(1 - foundRateValue) * 100}%"></div>
+              </div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value"><strong>${hitRate}</strong><span>${metric.hitAuditPoints}/${metric.aiChecked}</span></div>
+              <div class="metric-bar" aria-label="${metric.category} 有效命中率 ${hitRate}">
+                <div class="bar-part bar-hit" style="width:${hitRateValue * 100}%"></div>
+                <div class="bar-part bar-rest" style="width:${(1 - hitRateValue) * 100}%"></div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function fallbackBox(index) {
+      const top = 8 + (index % 8) * 10;
+      return { left: 4, top, width: 92, height: 7.5 };
+    }
+
+    function renderRuleOptions() {
+      manualForm.elements.title.innerHTML = ruleOptions.map((option) => (
+        `<option value="${option}">${option}</option>`
+      )).join("");
+    }
+
+    function manualSeedItems() {
+      return manualAnnotations.map((item, index) => ({
+        ...item,
+        id: item.id || `M${index + 1}`,
+        title: ruleOptions.includes(item.title) ? item.title : ruleOptions[0],
+        original: item.original,
+        suggestion: item.suggestion,
+        box: item.box || fallbackBox(index),
+        source: "seed"
+      }));
+    }
+
+    function manualDisplayItems() {
+      return manualItems.map((item, index) => ({
+        ...item,
+        id: item.id,
+        title: item.title,
+        hit: "人工审核",
+        action: "人工记录",
+        box: item.box || fallbackBox(index + manualSeedItems().length),
+        source: "saved"
+      }));
+    }
+
+    function currentReviewItems() {
+      return activeReviewMode === "manual" ? manualDisplayItems() : items;
+    }
+
+    function markArea(item) {
+      const box = item.box || {};
+      return Math.max(0, Number(box.width) || 0) * Math.max(0, Number(box.height) || 0);
+    }
+
+    function orderedMarkItems(itemsForMode) {
+      return [...itemsForMode].sort((left, right) => markArea(right) - markArea(left));
+    }
+
+    function renderMarks() {
+      imageWrap.querySelectorAll(".mark").forEach((mark) => mark.remove());
+      const reviewItems = orderedMarkItems(currentReviewItems());
+      reviewItems.forEach((item, index) => {
+        const mark = document.createElement("button");
+        mark.type = "button";
+        mark.className = activeReviewMode === "manual" ? "mark manual" : "mark";
+        mark.id = `mark-${activeReviewMode}-${item.id}`;
+        mark.setAttribute("aria-label", `${item.id} ${item.title}`);
+        mark.style.left = `${item.box.left}%`;
+        mark.style.top = `${item.box.top}%`;
+        mark.style.width = `${item.box.width}%`;
+        mark.style.height = `${item.box.height}%`;
+        mark.style.setProperty("--mark-z", String(10 + index));
+        mark.style.setProperty("--mark-note-offset", `${(index % 4) * 18}px`);
+        mark.innerHTML = `<span class="mark-label">${item.id}</span><span class="mark-note">${item.title}</span>`;
+        mark.addEventListener("click", () => activate(item.id, { scrollCard: true }, activeReviewMode));
+        imageWrap.appendChild(mark);
+      });
+      return reviewItems;
+    }
+
+    function renderCards() {
+      aiCount.textContent = `${items.length}项`;
+      if (items.length === 0) {
+        cards.innerHTML = '<div class="ai-empty">AI 未检出审核点。</div>';
+        return;
+      }
+      cards.innerHTML = items.map((item) => `
+        <button class="card" type="button" id="card-ai-${item.id}" data-id="${item.id}" data-review-mode="ai">
+          <div class="card-head">
+            <span class="id">${item.id}</span>
+            <h3>${item.title}</h3>
+          </div>
+          <dl class="card-body">
+            <div class="field">
+              <dt>问题描述</dt>
+              <dd>${item.original}</dd>
+            </div>
+            <div class="field">
+              <dt>建议修改</dt>
+              <dd class="quote suggestion">${item.suggestion}</dd>
+            </div>
+          </dl>
+        </button>
+      `).join("");
+
+      cards.querySelectorAll(".card").forEach((card) => {
+        card.addEventListener("click", (event) => {
+          event.stopPropagation();
+          switchReviewMode("ai", { force: activeReviewMode !== "ai" });
+          activate(card.dataset.id, { scrollImage: true }, "ai");
+        });
+      });
+    }
+
+    function loadManualItems() {
+      const saved = localStorage.getItem(manualStoreKey);
+      if (!saved) {
+        return manualSeedItems();
+      }
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return manualSeedItems();
+      }
+    }
+
+    function saveManualItems() {
+      localStorage.setItem(manualStoreKey, JSON.stringify(manualItems));
+    }
+
+    function safeFileName(value) {
+      return String(value || "sample")
+        .trim()
+        .replace(/[\\/:*?"<>|]/g, "_")
+        .replace(/\s+/g, "_")
+        .slice(0, 80);
+    }
+
+
+
+    function exportTimestamp() {
+      const date = new Date();
+      const pad = (value) => String(value).padStart(2, "0");
+      return [
+        date.getFullYear(),
+        pad(date.getMonth() + 1),
+        pad(date.getDate())
+      ].join("") + "-" + [
+        pad(date.getHours()),
+        pad(date.getMinutes()),
+        pad(date.getSeconds())
+      ].join("");
+    }
+
+
+
+    function normalizeManualExportItem(item, index) {
+      return {
+        id: item.id && item.id.startsWith("M") ? item.id : `M${index + 1}`,
+        title: item.title,
+        original: item.original || "",
+        suggestion: item.suggestion || "",
+        box: item.box || fallbackBox(index)
+      };
+    }
+
+    function exportManualReview() {
+      const exportItems = manualItems.map(normalizeManualExportItem);
+      const blob = new Blob([JSON.stringify(exportItems, null, 2)], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${safeFileName(document.title.replace(/ - .*$/, ""))}_manual-review_${exportTimestamp()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function formatBox(box) {
+      if (!box) return "未框选位置";
+      return `已框选：左 ${box.left.toFixed(1)}%，上 ${box.top.toFixed(1)}%，宽 ${box.width.toFixed(1)}%，高 ${box.height.toFixed(1)}%`;
+    }
+
+    function updateBoxStatus() {
+      manualBoxStatus.textContent = formatBox(pendingManualBox);
+    }
+
+    function resetManualForm() {
+      editingManualId = null;
+      pendingManualBox = null;
+      stopBoxSelection();
+      manualForm.reset();
+      manualForm.querySelector("#manualSubmit").textContent = "保存审核点";
+      updateBoxStatus();
+    }
+
+    function showManualForm() {
+      manualForm.classList.remove("is-collapsed");
+      manualAdd.hidden = true;
+    }
+
+    function hideManualForm() {
+      manualForm.classList.add("is-collapsed");
+      manualAdd.hidden = false;
+    }
+
+    function renderManualCards() {
+      const displayItems = manualDisplayItems();
+      manualCount.textContent = `${displayItems.length}项`;
+      if (displayItems.length === 0) {
+        manualCards.innerHTML = '<div class="manual-empty">暂无人工审核点。可使用上方表单新增。</div>';
+        return;
+      }
+
+      manualCards.innerHTML = displayItems.map((item, index) => `
+        <article class="card" id="card-manual-${item.id}" data-id="${item.id}" data-review-mode="manual">
+          <div class="card-head">
+            <span class="id">${item.id.startsWith("M") ? item.id : `M${index + 1}`}</span>
+            <h3>${item.title}</h3>
+          </div>
+          <dl class="card-body">
+            <div class="field">
+              <dt>问题描述</dt>
+              <dd>${item.original || "未填写"}</dd>
+            </div>
+            <div class="field">
+              <dt>建议修改</dt>
+              <dd class="quote suggestion">${item.suggestion || "未填写"}</dd>
+            </div>
+            ${item.source === "saved" ? `<div class="form-actions">
+              <button class="action-btn" type="button" data-edit="${item.id}">编辑</button>
+              <button class="action-btn" type="button" data-delete="${item.id}">删除</button>
+            </div>` : ""}
+          </dl>
+        </article>
+      `).join("");
+
+      manualCards.querySelectorAll(".card").forEach((card) => {
+        card.addEventListener("click", (event) => {
+          event.stopPropagation();
+          switchReviewMode("manual", { force: activeReviewMode !== "manual" });
+          activate(card.dataset.id, { scrollImage: true }, "manual");
+        });
+      });
+
+      manualCards.querySelectorAll("[data-edit]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const item = manualItems.find((entry) => entry.id === button.dataset.edit);
+          if (!item) return;
+          editingManualId = item.id;
+          manualForm.elements.title.value = item.title;
+          manualForm.elements.original.value = item.original || "";
+          manualForm.elements.suggestion.value = item.suggestion || "";
+          pendingManualBox = item.box || null;
+          updateBoxStatus();
+          manualForm.querySelector("#manualSubmit").textContent = "更新审核点";
+          switchReviewMode("manual");
+          showManualForm();
+          manualForm.scrollIntoView({ block: "start", behavior: "smooth" });
+        });
+      });
+
+      manualCards.querySelectorAll("[data-delete]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          manualItems = manualItems.filter((entry) => entry.id !== button.dataset.delete);
+          saveManualItems();
+          renderManualCards();
+          if (activeReviewMode === "manual") {
+            renderMarks();
+          }
+        });
+      });
+    }
+
+    function switchReviewMode(mode, options = {}) {
+      if (!mode || (activeReviewMode === mode && !options.force)) {
+        return;
+      }
+      activeReviewMode = mode;
+      reviewPanels.forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.reviewMode === mode);
+      });
+      renderMarks();
+      const firstItem = currentReviewItems()[0];
+      if (firstItem) {
+        activate(firstItem.id, {}, mode);
+      }
+    }
+
+    function pointToImagePercent(event) {
+      const rect = imageWrap.getBoundingClientRect();
+      const left = Math.max(0, Math.min(event.clientX - rect.left, rect.width));
+      const top = Math.max(0, Math.min(event.clientY - rect.top, rect.height));
+      return {
+        left: (left / rect.width) * 100,
+        top: (top / rect.height) * 100
+      };
+    }
+
+    function normalizeBox(start, end) {
+      const left = Math.min(start.left, end.left);
+      const top = Math.min(start.top, end.top);
+      const width = Math.abs(end.left - start.left);
+      const height = Math.abs(end.top - start.top);
+      return {
+        left,
+        top,
+        width: Math.max(width, 1),
+        height: Math.max(height, 1)
+      };
+    }
+
+    function drawDraftBox(box) {
+      if (!draftMark) {
+        draftMark = document.createElement("div");
+        draftMark.className = "draft-mark";
+        imageWrap.appendChild(draftMark);
+      }
+      draftMark.style.left = `${box.left}%`;
+      draftMark.style.top = `${box.top}%`;
+      draftMark.style.width = `${box.width}%`;
+      draftMark.style.height = `${box.height}%`;
+    }
+
+    function startBoxSelection() {
+      switchReviewMode("manual", { force: true });
+      selectingManualBox = true;
+      imageWrap.classList.add("selecting");
+      manualBoxButton.classList.add("active");
+      manualBoxStatus.textContent = "在左侧图片上拖拽框选位置";
+    }
+
+    function stopBoxSelection() {
+      selectingManualBox = false;
+      draftStart = null;
+      imageWrap.classList.remove("selecting");
+      manualBoxButton.classList.remove("active");
+      if (draftMark) {
+        draftMark.remove();
+        draftMark = null;
+      }
+    }
+
+    manualBoxButton.addEventListener("click", () => {
+      if (selectingManualBox) {
+        stopBoxSelection();
+        updateBoxStatus();
+      } else {
+        startBoxSelection();
+      }
+    });
+
+    manualAdd.addEventListener("click", (event) => {
+      event.stopPropagation();
+      resetManualForm();
+      switchReviewMode("manual", { force: true });
+      showManualForm();
+    });
+
+    manualExport.addEventListener("click", (event) => {
+      event.stopPropagation();
+      exportManualReview();
+    });
+
+    imageWrap.addEventListener("pointerdown", (event) => {
+      if (!selectingManualBox) return;
+      event.preventDefault();
+      draftStart = pointToImagePercent(event);
+      imageWrap.setPointerCapture(event.pointerId);
+      drawDraftBox({ ...draftStart, width: 1, height: 1 });
+    });
+
+    imageWrap.addEventListener("pointermove", (event) => {
+      if (!selectingManualBox || !draftStart) return;
+      event.preventDefault();
+      drawDraftBox(normalizeBox(draftStart, pointToImagePercent(event)));
+    });
+
+    imageWrap.addEventListener("pointerup", (event) => {
+      if (!selectingManualBox || !draftStart) return;
+      event.preventDefault();
+      pendingManualBox = normalizeBox(draftStart, pointToImagePercent(event));
+      stopBoxSelection();
+      updateBoxStatus();
+    });
+
+    manualForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(manualForm);
+      const nextItem = {
+        id: editingManualId || `manual-${Date.now()}`,
+        title: String(formData.get("title") || "").trim(),
+        original: String(formData.get("original") || "").trim(),
+        suggestion: String(formData.get("suggestion") || "").trim(),
+        box: pendingManualBox || fallbackBox(manualItems.length)
+      };
+      if (!nextItem.title) return;
+
+      if (editingManualId) {
+        manualItems = manualItems.map((item) => item.id === editingManualId ? nextItem : item);
+      } else {
+        manualItems = [nextItem, ...manualItems];
+      }
+      saveManualItems();
+      resetManualForm();
+      hideManualForm();
+      renderManualCards();
+      switchReviewMode("manual", { force: true });
+      activate(nextItem.id, { scrollImage: true }, "manual");
+    });
+
+    manualReset.addEventListener("click", resetManualForm);
+
+    manualCollapse.addEventListener("click", () => {
+      hideManualForm();
+    });
+
+    function scrollMarkIntoView(mark) {
+      const stageRect = stage.getBoundingClientRect();
+      const markRect = mark.getBoundingClientRect();
+      const currentTop = stage.scrollTop;
+      const centeredTop = currentTop + markRect.top - stageRect.top - (stage.clientHeight - markRect.height) / 2;
+      const maxTop = stage.scrollHeight - stage.clientHeight;
+      const nextTop = Math.max(0, Math.min(centeredTop, maxTop));
+
+      stage.scrollTo({ top: nextTop, behavior: "smooth" });
+
+      window.setTimeout(() => {
+        const stillThere = Math.abs(stage.scrollTop - nextTop) > 8;
+        if (stillThere) {
+          stage.scrollTop = nextTop;
+        }
+      }, 180);
+    }
+
+    function activate(id, options = {}, mode = activeReviewMode) {
+      document.querySelectorAll(".mark, .card").forEach((node) => {
+        node.classList.remove("active");
+        if (node.classList.contains("mark")) node.style.zIndex = "";
+      });
+      const mark = document.querySelector(`#mark-${mode}-${id}`);
+      const card = document.querySelector(`[data-review-mode="${mode}"][data-id="${id}"]`);
+      if (!mark || !card) return;
+
+      mark.classList.add("active");
+      mark.style.zIndex = "1000";
+      card.classList.add("active");
+
+      if (options.scrollImage) {
+        scrollMarkIntoView(mark);
+      }
+
+      if (options.scrollCard) {
+        card.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+    }
+
+    renderRuleOptions();
+    updateBoxStatus();
+    hideManualForm();
+    renderMarks();
+    renderBusinessMetrics();
+    initializeImageZoom();
+    initializeImagePan();
+    renderCards();
+    renderManualCards();
+    reviewPanels.forEach((panel) => {
+      panel.addEventListener("click", () => switchReviewMode(panel.dataset.reviewMode));
+      panel.addEventListener("focusin", () => switchReviewMode(panel.dataset.reviewMode));
+    });
+    window.addEventListener("load", () => {
+      requestAnimationFrame(() => {
+        const firstItem = items[0];
+        if (firstItem) activate(firstItem.id, { scrollImage: true }, "ai");
+      });
+    });
+  </script>
+</body>
+</html>

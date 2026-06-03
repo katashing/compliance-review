@@ -45,7 +45,7 @@
       background: #eaf2fb;
       border-right: 1px solid var(--line);
       display: grid;
-      grid-template-rows: auto 1fr;
+      grid-template-rows: auto auto 1fr;
       gap: 14px;
     }
 
@@ -114,12 +114,71 @@
       overscroll-behavior: contain;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
+      touch-action: pan-x pan-y;
+    }
+
+    .stage {
+      cursor: grab;
+    }
+
+    .stage.dragging {
+      cursor: grabbing;
+      scroll-behavior: auto;
+      user-select: none;
+    }
+
+    .stage.dragging * {
+      cursor: grabbing !important;
+    }
+
+    .zoom-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-height: 34px;
+    }
+
+    .zoom-btn {
+      min-width: 34px;
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .zoom-btn:hover,
+    .zoom-btn:focus-visible {
+      border-color: var(--accent);
+      color: var(--accent);
+      outline: none;
+    }
+
+    .zoom-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .zoom-reset {
+      min-width: 54px;
+      font-size: 12px;
+    }
+
+    .zoom-level {
+      min-width: 54px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
     }
 
     .image-wrap {
       position: relative;
-      width: min(100%, 420px);
+      width: var(--image-width, 100%);
       margin: 0 auto;
       line-height: 0;
     }
@@ -136,12 +195,14 @@
       background: rgba(223, 43, 50, 0.03);
       cursor: pointer;
       transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    z-index: var(--mark-z, 10);
     }
 
     .mark.active {
       border-color: #ffb000;
       background: rgba(255, 176, 0, 0.12);
       box-shadow: 0 0 0 5px rgba(255, 176, 0, 0.24);
+    z-index: 1000;
     }
 
     .mark-label {
@@ -212,6 +273,7 @@
       font-weight: 800;
       line-height: 1.2;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    transform: translateY(var(--mark-note-offset, 0));
     }
 
     .content-pane {
@@ -384,8 +446,54 @@
       background: #fbfdff;
       overflow: hidden;
     }
+    .material-facts {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+      overflow: hidden;
+    }
 
-    .metric-title {
+    .fact-table-wrap {
+      overflow-x: auto;
+    }
+
+    .fact-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+    }
+
+    .fact-table th,
+    .fact-table td {
+      padding: 10px 14px;
+      border-top: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .fact-table th:last-child,
+    .fact-table td:last-child {
+      border-right: 0;
+    }
+
+    .fact-table th {
+      color: var(--muted);
+      background: #f9fcff;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .fact-table td {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+.metric-title {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -939,6 +1047,12 @@
           <a class="nav-link" href="index.html">返回首页</a>
         </div>
       </div>
+      <div class="zoom-toolbar" aria-label="原图缩放控制">
+        <button class="zoom-btn" type="button" id="zoomIn" title="放大">+</button>
+        <span class="zoom-level" id="zoomLevel">100%</span>
+        <button class="zoom-btn" type="button" id="zoomOut" title="缩小">-</button>
+        <button class="zoom-btn zoom-reset" type="button" id="zoomReset" title="重置缩放">重置</button>
+      </div>
       <div class="stage" id="stage" tabindex="0">
         <div class="image-wrap" id="imageWrap">
           <img src="assets/samples/退回_摩根标普港股通低波红利ETF联接长图_2025-09/material.png" alt="待审核长图原图" />
@@ -954,6 +1068,27 @@
             
           </div>
           
+        </div>
+        <div class="material-facts" aria-label="材料事实">
+          <div class="metric-title">
+            <h3>材料事实</h3>
+            <span>仅展示已录入信息</span>
+          </div>
+          <div class="fact-table-wrap">
+            <table class="fact-table">
+              <thead>
+                <tr>
+                  <th>提审日期</th><th>产品名称</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+              <tr>
+                <td>2025-09</td><td>摩根标普港股通低波红利ETF联接</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="metric-block" aria-label="业务关注指标">
           <div class="metric-title">
@@ -1027,7 +1162,7 @@
                 "category": "文件总计",
                 "totalAuditPoints": 1,
                 "aiFound": 1,
-                "aiChecked": 2,
+                "aiChecked": 1,
                 "hitAuditPoints": 1,
                 "foundRate": {
                       "numerator": 1,
@@ -1037,16 +1172,16 @@
                 },
                 "hitRate": {
                       "numerator": 1,
-                      "denominator": 2,
-                      "value": 0.5,
-                      "percent": "50%"
+                      "denominator": 1,
+                      "value": 1,
+                      "percent": "100%"
                 }
           },
           {
                 "category": "上下文不一致",
                 "totalAuditPoints": 1,
                 "aiFound": 1,
-                "aiChecked": 2,
+                "aiChecked": 1,
                 "hitAuditPoints": 1,
                 "foundRate": {
                       "numerator": 1,
@@ -1056,9 +1191,9 @@
                 },
                 "hitRate": {
                       "numerator": 1,
-                      "denominator": 2,
-                      "value": 0.5,
-                      "percent": "50%"
+                      "denominator": 1,
+                      "value": 1,
+                      "percent": "100%"
                 }
           }
     ];
@@ -1067,25 +1202,24 @@
           {
                 "id": "A1",
                 "title": "上下文不一致",
-                "original": "第一部分模块标题写“过往上涨动力足！或适应不同市场行情”，图表标题写“今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍”，但图表横轴展示为“近3年”，图表下方来源又写“统计区间2022.9.1-2025.8.31”，与“今年以来”的时间口径不一致。",
+                "original": "上方模块标题写“今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍”，但同一图表下方脚注写“统计区间2022.9.1-2025.8.31”，图表横轴也标示为“近3年”，标题“今年以来”与图表/脚注统计区间不一致。",
                 "hit": "上下文不一致",
-                "rule": "规则要求正文、图表标题、横轴、脚注或来源中的“今年以来”“近3年”等时间口径必须前后一致；图表标题写一个时间区间，横轴、脚注或来源显示另一个时间区间的，应判定为上下文不一致。",
-                "suggestion": "统一该图表标题、横轴和来源的统计区间；如实际展示2022.9.1-2025.8.31近3年数据，应将标题中的“今年以来”改为与近3年一致的表述，或补充今年以来对应区间的数据和脚注。",
+                "rule": "材料中的标题、正文、图表、脚注、数据来源等应保持上下文一致；图表、数据、标题和解释文字应互相对应，数据口径、统计区间、来源说明与正文结论应一致。",
+                "suggestion": "请统一标题和图表统计口径。若展示“今年以来”，应补充今年以来的明确起止日期、对应数据和来源；若展示近3年，则应将标题改为近3年口径，避免将近3年数据表述为今年以来涨幅。",
                 "action": "退回修改",
                 "evidence": [
-                      "模块标题：过往上涨动力足！或适应不同市场行情",
-                      "图表标题：今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍",
-                      "横轴：近3年",
+                      "今年以来标普港股通低波红利指数涨幅是中证红利指数的20倍",
+                      "近3年",
                       "数据来源：Wind，统计区间2022.9.1-2025.8.31"
                 ],
                 "imageRef": "material_slice_01_y0-1800.png",
                 "boxInImage": {
-                      "left": 2,
-                      "top": 48,
-                      "width": 94,
-                      "height": 38
+                      "left": 7,
+                      "top": 52,
+                      "width": 86,
+                      "height": 33
                 },
-                "box": { "left": 2, "top": 22.268041237113405, "width": 94, "height": 17.628865979381445 },
+                "box": { "left": 7, "top": 24.123711340206185, "width": 86, "height": 15.309278350515465 },
                 "matches": [
                       "M1"
                 ],
@@ -1093,36 +1227,12 @@
                       {
                             "manualId": "M1",
                             "manualTitle": "上下文不一致",
-                            "score": 0.2738,
-                            "semanticScore": 0.2738,
-                            "positionIou": 0.7042,
+                            "score": 0.2832,
+                            "semanticScore": 0.2832,
+                            "positionIou": 0.6104,
                             "method": "category-content-and-position"
                       }
                 ]
-          },
-          {
-                "id": "A2",
-                "title": "上下文不一致",
-                "original": "“半年调仓更及时”部分正文写“标普港股通低波红利指数每年1月底、7月底调仓”，右侧红色表头却写“红利低波指数”，并标注“每半年(1月底、7月底)”和“2025年7月”；同一表格左侧又有“红利低波指数”列，显示“调仓频率：每年”“最近一次调仓：2024年12月”。同一指数名称“红利低波指数”在同一组件内出现不同调仓频率和最近调仓日期，且与正文所称“标普港股通低波红利指数”名称不一致。",
-                "hit": "上下文不一致",
-                "rule": "规则要求同一指数、同一指标、同一统计区间在不同位置的数值和口径必须一致，指数名称也必须前后一致；同一指数出现不同调仓频率、日期或正文与图表指数名称无法对应的，应判定为上下文不一致。",
-                "suggestion": "复核右侧红色表头对应的指数名称，将其明确改为“标普港股通低波红利指数”或其他准确全称，并统一表格中“红利低波指数”的调仓频率和最近一次调仓日期，避免同名指数对应不同口径。",
-                "action": "退回修改",
-                "evidence": [
-                      "正文：标普港股通低波红利指数每年1月底、7月底调仓",
-                      "左侧表格：红利低波指数；调仓频率 每年；最近一次调仓 2024年12月",
-                      "右侧红色表头：红利低波指数；每半年(1月底、7月底)；2025年7月"
-                ],
-                "imageRef": "material_slice_03_y3000-3880.png",
-                "boxInImage": {
-                      "left": 5,
-                      "top": 2,
-                      "width": 90,
-                      "height": 40
-                },
-                "box": { "left": 5, "top": 77.77319587628865, "width": 90, "height": 9.072164948453608 },
-                "matches": [],
-                "matchDetails": []
           }
     ];
 
@@ -1138,6 +1248,10 @@
 
     const imageWrap = document.querySelector("#imageWrap");
     const stage = document.querySelector("#stage");
+    const zoomOut = document.querySelector("#zoomOut");
+    const zoomIn = document.querySelector("#zoomIn");
+    const zoomReset = document.querySelector("#zoomReset");
+    const zoomLevel = document.querySelector("#zoomLevel");
     const cards = document.querySelector("#cards");
     const businessMetricRows = document.querySelector("#businessMetrics");
     const reviewPanels = document.querySelectorAll(".review-panel");
@@ -1151,8 +1265,11 @@
     const manualBoxStatus = document.querySelector("#manualBoxStatus");
     const aiCount = document.querySelector("#aiCount");
     const manualCount = document.querySelector("#manualCount");
-    const manualStoreKey = `manual-review-v2:${location.pathname}`;
-    const ruleOptions = ["上下文不一致"];
+    const manualStoreKey = `manual-review-v3:${location.pathname}`;
+    const ruleOptions = [
+          "上下文不一致",
+          "业绩展示不符合外规要求"
+    ];
     let manualItems = loadManualItems();
     let editingManualId = null;
     let activeReviewMode = "ai";
@@ -1160,9 +1277,111 @@
     let selectingManualBox = false;
     let draftMark = null;
     let draftStart = null;
+    let imageZoom = 1;
+    let baseImageWidth = 0;
+    const minImageZoom = 0.5;
+    const maxImageZoom = 8;
+    const imageZoomStep = 0.25;
+    let imagePanStart = null;
 function formatRate(numerator, denominator) {
       if (!denominator) return "-";
       return `${Math.round((numerator / denominator) * 100)}%`;
+    }
+
+    function clampImageZoom(value) {
+      return Math.max(minImageZoom, Math.min(maxImageZoom, value));
+    }
+
+    function updateZoomButtons() {
+      if (!zoomLevel) return;
+      zoomLevel.textContent = `${Math.round(imageZoom * 100)}%`;
+      zoomOut.disabled = imageZoom <= minImageZoom;
+      zoomIn.disabled = imageZoom >= maxImageZoom;
+    }
+
+    function setImageZoom(nextZoom, options = {}) {
+      if (!baseImageWidth) {
+        baseImageWidth = imageWrap.getBoundingClientRect().width || stage.clientWidth || 420;
+      }
+      const previousWidth = Math.max(1, baseImageWidth * imageZoom);
+      const centerX = stage.scrollLeft + stage.clientWidth / 2;
+      const centerY = stage.scrollTop + stage.clientHeight / 2;
+      const ratioX = centerX / previousWidth;
+      const ratioY = centerY / Math.max(1, imageWrap.getBoundingClientRect().height);
+      imageZoom = clampImageZoom(nextZoom);
+      imageWrap.style.setProperty("--image-width", `${Math.round(baseImageWidth * imageZoom)}px`);
+      updateZoomButtons();
+      if (!options.resetScroll) {
+        requestAnimationFrame(() => {
+          stage.scrollLeft = Math.max(0, (baseImageWidth * imageZoom) * ratioX - stage.clientWidth / 2);
+          stage.scrollTop = Math.max(0, imageWrap.getBoundingClientRect().height * ratioY - stage.clientHeight / 2);
+        });
+      }
+    }
+
+    function resetImageZoom() {
+      setImageZoom(1, { resetScroll: true });
+      stage.scrollLeft = 0;
+    }
+
+    function initializeImageZoom() {
+      const image = imageWrap.querySelector("img");
+      const applyInitialWidth = () => {
+        imageWrap.style.removeProperty("--image-width");
+        baseImageWidth = imageWrap.getBoundingClientRect().width || stage.clientWidth || 420;
+        setImageZoom(1, { resetScroll: true });
+      };
+      if (image?.complete) {
+        applyInitialWidth();
+      } else {
+        image?.addEventListener("load", applyInitialWidth, { once: true });
+      }
+      zoomOut.addEventListener("click", () => setImageZoom(imageZoom - imageZoomStep));
+      zoomIn.addEventListener("click", () => setImageZoom(imageZoom + imageZoomStep));
+      zoomReset.addEventListener("click", resetImageZoom);
+    }
+
+    function canPanImage(event) {
+      if (selectingManualBox) return false;
+      if (event.target.closest(".mark, .draft-mark, button, a, input, textarea, select")) return false;
+      return stage.scrollWidth > stage.clientWidth || stage.scrollHeight > stage.clientHeight;
+    }
+
+    function startImagePan(event) {
+      if (!canPanImage(event)) return;
+      event.preventDefault();
+      imagePanStart = {
+        x: event.clientX,
+        y: event.clientY,
+        left: stage.scrollLeft,
+        top: stage.scrollTop
+      };
+      stage.classList.add("dragging");
+      stage.setPointerCapture?.(event.pointerId);
+    }
+
+    function moveImagePan(event) {
+      if (!imagePanStart) return;
+      event.preventDefault();
+      stage.scrollLeft = imagePanStart.left - (event.clientX - imagePanStart.x);
+      stage.scrollTop = imagePanStart.top - (event.clientY - imagePanStart.y);
+    }
+
+    function stopImagePan(event) {
+      if (!imagePanStart) return;
+      imagePanStart = null;
+      stage.classList.remove("dragging");
+      if (event?.pointerId !== undefined && stage.hasPointerCapture?.(event.pointerId)) {
+        stage.releasePointerCapture(event.pointerId);
+      }
+    }
+
+    function initializeImagePan() {
+      stage.addEventListener("pointerdown", startImagePan);
+      stage.addEventListener("pointermove", moveImagePan);
+      stage.addEventListener("pointerup", stopImagePan);
+      stage.addEventListener("pointercancel", stopImagePan);
+      stage.addEventListener("lostpointercapture", stopImagePan);
     }
 
     function renderBusinessMetrics() {
@@ -1241,10 +1460,19 @@ function formatRate(numerator, denominator) {
       return activeReviewMode === "manual" ? manualDisplayItems() : items;
     }
 
+    function markArea(item) {
+      const box = item.box || {};
+      return Math.max(0, Number(box.width) || 0) * Math.max(0, Number(box.height) || 0);
+    }
+
+    function orderedMarkItems(itemsForMode) {
+      return [...itemsForMode].sort((left, right) => markArea(right) - markArea(left));
+    }
+
     function renderMarks() {
       imageWrap.querySelectorAll(".mark").forEach((mark) => mark.remove());
-      const reviewItems = currentReviewItems();
-      reviewItems.forEach((item) => {
+      const reviewItems = orderedMarkItems(currentReviewItems());
+      reviewItems.forEach((item, index) => {
         const mark = document.createElement("button");
         mark.type = "button";
         mark.className = activeReviewMode === "manual" ? "mark manual" : "mark";
@@ -1254,6 +1482,8 @@ function formatRate(numerator, denominator) {
         mark.style.top = `${item.box.top}%`;
         mark.style.width = `${item.box.width}%`;
         mark.style.height = `${item.box.height}%`;
+        mark.style.setProperty("--mark-z", String(10 + index));
+        mark.style.setProperty("--mark-note-offset", `${(index % 4) * 18}px`);
         mark.innerHTML = `<span class="mark-label">${item.id}</span><span class="mark-note">${item.title}</span>`;
         mark.addEventListener("click", () => activate(item.id, { scrollCard: true }, activeReviewMode));
         imageWrap.appendChild(mark);
@@ -1620,12 +1850,16 @@ function formatRate(numerator, denominator) {
     }
 
     function activate(id, options = {}, mode = activeReviewMode) {
-      document.querySelectorAll(".mark, .card").forEach((node) => node.classList.remove("active"));
+      document.querySelectorAll(".mark, .card").forEach((node) => {
+        node.classList.remove("active");
+        if (node.classList.contains("mark")) node.style.zIndex = "";
+      });
       const mark = document.querySelector(`#mark-${mode}-${id}`);
       const card = document.querySelector(`[data-review-mode="${mode}"][data-id="${id}"]`);
       if (!mark || !card) return;
 
       mark.classList.add("active");
+      mark.style.zIndex = "1000";
       card.classList.add("active");
 
       if (options.scrollImage) {
@@ -1642,6 +1876,8 @@ function formatRate(numerator, denominator) {
     hideManualForm();
     renderMarks();
     renderBusinessMetrics();
+    initializeImageZoom();
+    initializeImagePan();
     renderCards();
     renderManualCards();
     reviewPanels.forEach((panel) => {
@@ -1649,7 +1885,10 @@ function formatRate(numerator, denominator) {
       panel.addEventListener("focusin", () => switchReviewMode(panel.dataset.reviewMode));
     });
     window.addEventListener("load", () => {
-      requestAnimationFrame(() => activate("P1", { scrollImage: true }, "ai"));
+      requestAnimationFrame(() => {
+        const firstItem = items[0];
+        if (firstItem) activate(firstItem.id, { scrollImage: true }, "ai");
+      });
     });
   </script>
 </body>

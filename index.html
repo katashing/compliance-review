@@ -530,6 +530,10 @@
       color: var(--accent);
     }
 
+    .sort-button.active {
+      color: var(--accent);
+    }
+
     .empty {
       padding: 22px;
       background: var(--panel);
@@ -599,7 +603,7 @@
       <section class="stats" aria-label="样例统计">
         <div class="stat"><strong id="sampleCount">0</strong><span>样例数量</span></div>
         <div class="stat"><strong id="issueCount">0</strong><span>审核点</span></div>
-        <div class="stat"><strong id="ruleCount">1</strong><span>业务规则</span></div>
+        <div class="stat"><strong id="ruleCount">2</strong><span>业务规则</span></div>
       </section>
 
       <section>
@@ -627,7 +631,7 @@
           <button class="sort-button" type="button" data-sort="issues">审核点</button>
           <button class="sort-button" type="button" data-sort="foundRate">违规检出率</button>
           <button class="sort-button" type="button" data-sort="hitRate">有效命中率</button>
-          <button class="sort-button active" type="button" data-sort="date">上传日期</button>
+          <button class="sort-button active" type="button" data-sort="date">提审日期</button>
           <span>操作</span>
         </div>
         <div class="sample-table" id="samples"></div>
@@ -664,6 +668,42 @@
                 "manualVerdict": "退回",
                 "manualVerdictClass": "reject",
                 "date": "2025-08",
+                "submissionDate": "2025-08",
+                "issues": 1,
+                "metricTotal": {
+                      "category": "文件总计",
+                      "totalAuditPoints": 1,
+                      "aiFound": 0,
+                      "aiChecked": 2,
+                      "hitAuditPoints": 0,
+                      "foundRate": {
+                            "numerator": 0,
+                            "denominator": 1,
+                            "value": 0,
+                            "percent": "0%"
+                      },
+                      "hitRate": {
+                            "numerator": 0,
+                            "denominator": 2,
+                            "value": 0,
+                            "percent": "0%"
+                      }
+                },
+                "metrics": [],
+                "description": "业务人工审核指出材料图表标题、脚注与横轴时间区间不一致。",
+                "thumb": "assets/samples/退回_华泰柏瑞通用航空长图_2026-02-04/material.png",
+                "href": "sample-退回_华泰柏瑞通用航空长图_2025-08.html"
+          },
+          {
+                "id": "退回_摩根标普港股通低波红利ETF联接长图_2025-09",
+                "title": "退-摩根标普港股通低波红利ETF联接长图",
+                "type": "图片长图",
+                "verdict": "退回",
+                "verdictClass": "reject",
+                "manualVerdict": "退回",
+                "manualVerdictClass": "reject",
+                "date": "2025-09",
+                "submissionDate": "2025-09",
                 "issues": 1,
                 "metricTotal": {
                       "category": "文件总计",
@@ -685,25 +725,26 @@
                       }
                 },
                 "metrics": [],
-                "description": "业务人工审核指出材料图表标题、脚注与横轴时间区间不一致。",
-                "thumb": "assets/samples/退回_华泰柏瑞通用航空长图_2026-02-04/material.png",
-                "href": "sample-退回_华泰柏瑞通用航空长图_2025-08.html"
+                "description": "业务人工审核指出材料文字与图表时间区间、同一指数同一时期数据存在不一致。",
+                "thumb": "assets/samples/退回_摩根标普港股通低波红利ETF联接长图_2025-09/material.png",
+                "href": "sample-退回_摩根标普港股通低波红利ETF联接长图_2025-09.html"
           },
           {
-                "id": "退回_摩根标普港股通低波红利ETF联接长图_2025-09",
-                "title": "退-摩根标普港股通低波红利ETF联接长图",
+                "id": "退回_中泰星元长图_2025-08",
+                "title": "退-中泰星元长图",
                 "type": "图片长图",
                 "verdict": "退回",
                 "verdictClass": "reject",
                 "manualVerdict": "退回",
                 "manualVerdictClass": "reject",
-                "date": "2025-09",
+                "date": "2025-08",
+                "submissionDate": "2025-08",
                 "issues": 1,
                 "metricTotal": {
                       "category": "文件总计",
                       "totalAuditPoints": 1,
                       "aiFound": 1,
-                      "aiChecked": 2,
+                      "aiChecked": 1,
                       "hitAuditPoints": 1,
                       "foundRate": {
                             "numerator": 1,
@@ -713,47 +754,68 @@
                       },
                       "hitRate": {
                             "numerator": 1,
-                            "denominator": 2,
-                            "value": 0.5,
-                            "percent": "50%"
+                            "denominator": 1,
+                            "value": 1,
+                            "percent": "100%"
                       }
                 },
                 "metrics": [],
-                "description": "业务人工审核指出材料文字与图表时间区间、同一指数同一时期数据存在不一致。",
-                "thumb": "assets/samples/退回_摩根标普港股通低波红利ETF联接长图_2025-09/material.png",
-                "href": "sample-退回_摩根标普港股通低波红利ETF联接长图_2025-09.html"
-          }
-    ];
-
-    const runMetrics = {
-          "runId": "2026-05-26_rule-v1_current",
-          "overall": {
-                "category": "文件总计",
-                "totalAuditPoints": 2,
-                "aiFound": 2,
-                "aiChecked": 3,
-                "hitAuditPoints": 2,
-                "foundRate": {
-                      "numerator": 2,
-                      "denominator": 2,
-                      "value": 1,
-                      "percent": "100%"
-                },
-                "hitRate": {
-                      "numerator": 2,
-                      "denominator": 3,
-                      "value": 0.6666666666666666,
-                      "percent": "67%"
-                }
+                "description": "业务人工审核指出产品过往业绩中展示了成立不足半年的 2021 年度业绩，不符合外规要求。",
+                "thumb": "assets/samples/退回_中泰星元长图_2025-08/material.png",
+                "href": "sample-退回_中泰星元长图_2025-08.html"
           },
-          "byCategory": [
-                {
-                      "category": "上下文不一致",
+          {
+                "id": "退回_单页通用航空ETF_2025-08",
+                "title": "退-【单页】通用航空ETF",
+                "type": "PDF转图片",
+                "verdict": "退回",
+                "verdictClass": "reject",
+                "manualVerdict": "退回",
+                "manualVerdictClass": "reject",
+                "date": "2025-08",
+                "submissionDate": "2025-08",
+                "issues": 1,
+                "metricTotal": {
+                      "category": "文件总计",
+                      "totalAuditPoints": 1,
+                      "aiFound": 1,
+                      "aiChecked": 1,
+                      "hitAuditPoints": 1,
+                      "foundRate": {
+                            "numerator": 1,
+                            "denominator": 1,
+                            "value": 1,
+                            "percent": "100%"
+                      },
+                      "hitRate": {
+                            "numerator": 1,
+                            "denominator": 1,
+                            "value": 1,
+                            "percent": "100%"
+                      }
+                },
+                "metrics": [],
+                "description": "业务人工审核指出航空指数基日为2020-12-31，材料仅展示近一年数据，存在选取特定区间展示的嫌疑。",
+                "thumb": "assets/samples/退回_单页通用航空ETF_2025-08/material.png",
+                "href": "sample-退回_单页通用航空ETF_2025-08.html"
+          },
+          {
+                "id": "退回_国泰君安量化选股一页通_2025-08",
+                "title": "退-250827国泰君安量化选股一页通",
+                "type": "PDF转图片",
+                "verdict": "退回",
+                "verdictClass": "reject",
+                "manualVerdict": "退回",
+                "manualVerdictClass": "reject",
+                "date": "2025-08-27",
+                "submissionDate": "2025-08-27",
+                "issues": 2,
+                "metricTotal": {
+                      "category": "文件总计",
                       "totalAuditPoints": 2,
                       "aiFound": 2,
-                      "aiChecked": 3,
+                      "aiChecked": 2,
                       "hitAuditPoints": 2,
-                      "sampleCount": 2,
                       "foundRate": {
                             "numerator": 2,
                             "denominator": 2,
@@ -762,62 +824,151 @@
                       },
                       "hitRate": {
                             "numerator": 2,
-                            "denominator": 3,
-                            "value": 0.6666666666666666,
-                            "percent": "67%"
+                            "denominator": 2,
+                            "value": 1,
+                            "percent": "100%"
+                      }
+                },
+                "metrics": [],
+                "description": "业务人工审核指出产品过往业绩中多个年度成立或存续不足半年，不符合外规要求。",
+                "thumb": "assets/samples/退回_国泰君安量化选股一页通_2025-08/material.png",
+                "href": "sample-退回_国泰君安量化选股一页通_2025-08.html"
+          }
+    ];
+
+    const runMetrics = {
+          "runId": "2026-05-26_rule-v1_current",
+          "overall": {
+                "category": "文件总计",
+                "totalAuditPoints": 6,
+                "aiFound": 5,
+                "aiChecked": 7,
+                "hitAuditPoints": 5,
+                "foundRate": {
+                      "numerator": 5,
+                      "denominator": 6,
+                      "value": 0.8333333333333334,
+                      "percent": "83%"
+                },
+                "hitRate": {
+                      "numerator": 5,
+                      "denominator": 7,
+                      "value": 0.7142857142857143,
+                      "percent": "71%"
+                }
+          },
+          "byCategory": [
+                {
+                      "category": "业绩展示不符合外规要求",
+                      "totalAuditPoints": 4,
+                      "aiFound": 4,
+                      "aiChecked": 5,
+                      "hitAuditPoints": 4,
+                      "sampleCount": 4,
+                      "foundRate": {
+                            "numerator": 4,
+                            "denominator": 4,
+                            "value": 1,
+                            "percent": "100%"
+                      },
+                      "hitRate": {
+                            "numerator": 4,
+                            "denominator": 5,
+                            "value": 0.8,
+                            "percent": "80%"
+                      }
+                },
+                {
+                      "category": "上下文不一致",
+                      "totalAuditPoints": 2,
+                      "aiFound": 1,
+                      "aiChecked": 2,
+                      "hitAuditPoints": 1,
+                      "sampleCount": 2,
+                      "foundRate": {
+                            "numerator": 1,
+                            "denominator": 2,
+                            "value": 0.5,
+                            "percent": "50%"
+                      },
+                      "hitRate": {
+                            "numerator": 1,
+                            "denominator": 2,
+                            "value": 0.5,
+                            "percent": "50%"
                       }
                 }
           ],
           "index": {
                 "stats": {
-                      "sampleCount": 2,
-                      "issueCount": 2
+                      "sampleCount": 5,
+                      "issueCount": 6
                 },
                 "businessMetrics": [
                       {
                             "category": "文件总计",
-                            "totalAuditPoints": 2,
-                            "aiFound": 2,
-                            "aiChecked": 3,
-                            "hitAuditPoints": 2,
+                            "totalAuditPoints": 6,
+                            "aiFound": 5,
+                            "aiChecked": 7,
+                            "hitAuditPoints": 5,
                             "foundRate": {
-                                  "numerator": 2,
-                                  "denominator": 2,
+                                  "numerator": 5,
+                                  "denominator": 6,
+                                  "value": 0.8333333333333334,
+                                  "percent": "83%"
+                            },
+                            "hitRate": {
+                                  "numerator": 5,
+                                  "denominator": 7,
+                                  "value": 0.7142857142857143,
+                                  "percent": "71%"
+                            }
+                      },
+                      {
+                            "category": "业绩展示不符合外规要求",
+                            "totalAuditPoints": 4,
+                            "aiFound": 4,
+                            "aiChecked": 5,
+                            "hitAuditPoints": 4,
+                            "sampleCount": 4,
+                            "foundRate": {
+                                  "numerator": 4,
+                                  "denominator": 4,
                                   "value": 1,
                                   "percent": "100%"
                             },
                             "hitRate": {
-                                  "numerator": 2,
-                                  "denominator": 3,
-                                  "value": 0.6666666666666666,
-                                  "percent": "67%"
+                                  "numerator": 4,
+                                  "denominator": 5,
+                                  "value": 0.8,
+                                  "percent": "80%"
                             }
                       },
                       {
                             "category": "上下文不一致",
                             "totalAuditPoints": 2,
-                            "aiFound": 2,
-                            "aiChecked": 3,
-                            "hitAuditPoints": 2,
+                            "aiFound": 1,
+                            "aiChecked": 2,
+                            "hitAuditPoints": 1,
                             "sampleCount": 2,
                             "foundRate": {
-                                  "numerator": 2,
+                                  "numerator": 1,
                                   "denominator": 2,
-                                  "value": 1,
-                                  "percent": "100%"
+                                  "value": 0.5,
+                                  "percent": "50%"
                             },
                             "hitRate": {
-                                  "numerator": 2,
-                                  "denominator": 3,
-                                  "value": 0.6666666666666666,
-                                  "percent": "67%"
+                                  "numerator": 1,
+                                  "denominator": 2,
+                                  "value": 0.5,
+                                  "percent": "50%"
                             }
                       }
                 ],
                 "sampleMetrics": [
                       {
-                            "id": "退回_华泰柏瑞通用航空长图_2025-08",
-                            "title": "退-华泰柏瑞通用航空长图",
+                            "id": "退回_中泰星元长图_2025-08",
+                            "title": "退-中泰星元长图",
                             "overall": {
                                   "category": "文件总计",
                                   "totalAuditPoints": 1,
@@ -839,13 +990,36 @@
                             }
                       },
                       {
-                            "id": "退回_摩根标普港股通低波红利ETF联接长图_2025-09",
-                            "title": "退-摩根标普港股通低波红利ETF联接长图",
+                            "id": "退回_华泰柏瑞通用航空长图_2025-08",
+                            "title": "退-华泰柏瑞通用航空长图",
+                            "overall": {
+                                  "category": "文件总计",
+                                  "totalAuditPoints": 1,
+                                  "aiFound": 0,
+                                  "aiChecked": 2,
+                                  "hitAuditPoints": 0,
+                                  "foundRate": {
+                                        "numerator": 0,
+                                        "denominator": 1,
+                                        "value": 0,
+                                        "percent": "0%"
+                                  },
+                                  "hitRate": {
+                                        "numerator": 0,
+                                        "denominator": 2,
+                                        "value": 0,
+                                        "percent": "0%"
+                                  }
+                            }
+                      },
+                      {
+                            "id": "退回_单页通用航空ETF_2025-08",
+                            "title": "退-【单页】通用航空ETF",
                             "overall": {
                                   "category": "文件总计",
                                   "totalAuditPoints": 1,
                                   "aiFound": 1,
-                                  "aiChecked": 2,
+                                  "aiChecked": 1,
                                   "hitAuditPoints": 1,
                                   "foundRate": {
                                         "numerator": 1,
@@ -855,9 +1029,55 @@
                                   },
                                   "hitRate": {
                                         "numerator": 1,
+                                        "denominator": 1,
+                                        "value": 1,
+                                        "percent": "100%"
+                                  }
+                            }
+                      },
+                      {
+                            "id": "退回_国泰君安量化选股一页通_2025-08",
+                            "title": "退-250827国泰君安量化选股一页通",
+                            "overall": {
+                                  "category": "文件总计",
+                                  "totalAuditPoints": 2,
+                                  "aiFound": 2,
+                                  "aiChecked": 2,
+                                  "hitAuditPoints": 2,
+                                  "foundRate": {
+                                        "numerator": 2,
                                         "denominator": 2,
-                                        "value": 0.5,
-                                        "percent": "50%"
+                                        "value": 1,
+                                        "percent": "100%"
+                                  },
+                                  "hitRate": {
+                                        "numerator": 2,
+                                        "denominator": 2,
+                                        "value": 1,
+                                        "percent": "100%"
+                                  }
+                            }
+                      },
+                      {
+                            "id": "退回_摩根标普港股通低波红利ETF联接长图_2025-09",
+                            "title": "退-摩根标普港股通低波红利ETF联接长图",
+                            "overall": {
+                                  "category": "文件总计",
+                                  "totalAuditPoints": 1,
+                                  "aiFound": 1,
+                                  "aiChecked": 1,
+                                  "hitAuditPoints": 1,
+                                  "foundRate": {
+                                        "numerator": 1,
+                                        "denominator": 1,
+                                        "value": 1,
+                                        "percent": "100%"
+                                  },
+                                  "hitRate": {
+                                        "numerator": 1,
+                                        "denominator": 1,
+                                        "value": 1,
+                                        "percent": "100%"
                                   }
                             }
                       }
@@ -865,8 +1085,207 @@
           },
           "samples": [
                 {
+                      "id": "退回_中泰星元长图_2025-08",
+                      "title": "退-中泰星元长图",
+                      "overall": {
+                            "category": "文件总计",
+                            "totalAuditPoints": 1,
+                            "aiFound": 1,
+                            "aiChecked": 1,
+                            "hitAuditPoints": 1,
+                            "foundRate": {
+                                  "numerator": 1,
+                                  "denominator": 1,
+                                  "value": 1,
+                                  "percent": "100%"
+                            },
+                            "hitRate": {
+                                  "numerator": 1,
+                                  "denominator": 1,
+                                  "value": 1,
+                                  "percent": "100%"
+                            }
+                      },
+                      "metrics": [
+                            {
+                                  "category": "业绩展示不符合外规要求",
+                                  "totalAuditPoints": 1,
+                                  "aiFound": 1,
+                                  "aiChecked": 1,
+                                  "hitAuditPoints": 1,
+                                  "foundRate": {
+                                        "numerator": 1,
+                                        "denominator": 1,
+                                        "value": 1,
+                                        "percent": "100%"
+                                  },
+                                  "hitRate": {
+                                        "numerator": 1,
+                                        "denominator": 1,
+                                        "value": 1,
+                                        "percent": "100%"
+                                  }
+                            }
+                      ],
+                      "matchCount": 1
+                },
+                {
                       "id": "退回_华泰柏瑞通用航空长图_2025-08",
                       "title": "退-华泰柏瑞通用航空长图",
+                      "overall": {
+                            "category": "文件总计",
+                            "totalAuditPoints": 1,
+                            "aiFound": 0,
+                            "aiChecked": 2,
+                            "hitAuditPoints": 0,
+                            "foundRate": {
+                                  "numerator": 0,
+                                  "denominator": 1,
+                                  "value": 0,
+                                  "percent": "0%"
+                            },
+                            "hitRate": {
+                                  "numerator": 0,
+                                  "denominator": 2,
+                                  "value": 0,
+                                  "percent": "0%"
+                            }
+                      },
+                      "metrics": [
+                            {
+                                  "category": "上下文不一致",
+                                  "totalAuditPoints": 1,
+                                  "aiFound": 0,
+                                  "aiChecked": 1,
+                                  "hitAuditPoints": 0,
+                                  "foundRate": {
+                                        "numerator": 0,
+                                        "denominator": 1,
+                                        "value": 0,
+                                        "percent": "0%"
+                                  },
+                                  "hitRate": {
+                                        "numerator": 0,
+                                        "denominator": 1,
+                                        "value": 0,
+                                        "percent": "0%"
+                                  }
+                            },
+                            {
+                                  "category": "业绩展示不符合外规要求",
+                                  "totalAuditPoints": 0,
+                                  "aiFound": 0,
+                                  "aiChecked": 1,
+                                  "hitAuditPoints": 0,
+                                  "foundRate": {
+                                        "numerator": 0,
+                                        "denominator": 0,
+                                        "value": null,
+                                        "percent": "-"
+                                  },
+                                  "hitRate": {
+                                        "numerator": 0,
+                                        "denominator": 1,
+                                        "value": 0,
+                                        "percent": "0%"
+                                  }
+                            }
+                      ],
+                      "matchCount": 0
+                },
+                {
+                      "id": "退回_单页通用航空ETF_2025-08",
+                      "title": "退-【单页】通用航空ETF",
+                      "overall": {
+                            "category": "文件总计",
+                            "totalAuditPoints": 1,
+                            "aiFound": 1,
+                            "aiChecked": 1,
+                            "hitAuditPoints": 1,
+                            "foundRate": {
+                                  "numerator": 1,
+                                  "denominator": 1,
+                                  "value": 1,
+                                  "percent": "100%"
+                            },
+                            "hitRate": {
+                                  "numerator": 1,
+                                  "denominator": 1,
+                                  "value": 1,
+                                  "percent": "100%"
+                            }
+                      },
+                      "metrics": [
+                            {
+                                  "category": "业绩展示不符合外规要求",
+                                  "totalAuditPoints": 1,
+                                  "aiFound": 1,
+                                  "aiChecked": 1,
+                                  "hitAuditPoints": 1,
+                                  "foundRate": {
+                                        "numerator": 1,
+                                        "denominator": 1,
+                                        "value": 1,
+                                        "percent": "100%"
+                                  },
+                                  "hitRate": {
+                                        "numerator": 1,
+                                        "denominator": 1,
+                                        "value": 1,
+                                        "percent": "100%"
+                                  }
+                            }
+                      ],
+                      "matchCount": 1
+                },
+                {
+                      "id": "退回_国泰君安量化选股一页通_2025-08",
+                      "title": "退-250827国泰君安量化选股一页通",
+                      "overall": {
+                            "category": "文件总计",
+                            "totalAuditPoints": 2,
+                            "aiFound": 2,
+                            "aiChecked": 2,
+                            "hitAuditPoints": 2,
+                            "foundRate": {
+                                  "numerator": 2,
+                                  "denominator": 2,
+                                  "value": 1,
+                                  "percent": "100%"
+                            },
+                            "hitRate": {
+                                  "numerator": 2,
+                                  "denominator": 2,
+                                  "value": 1,
+                                  "percent": "100%"
+                            }
+                      },
+                      "metrics": [
+                            {
+                                  "category": "业绩展示不符合外规要求",
+                                  "totalAuditPoints": 2,
+                                  "aiFound": 2,
+                                  "aiChecked": 2,
+                                  "hitAuditPoints": 2,
+                                  "foundRate": {
+                                        "numerator": 2,
+                                        "denominator": 2,
+                                        "value": 1,
+                                        "percent": "100%"
+                                  },
+                                  "hitRate": {
+                                        "numerator": 2,
+                                        "denominator": 2,
+                                        "value": 1,
+                                        "percent": "100%"
+                                  }
+                            }
+                      ],
+                      "matchCount": 2
+                },
+                {
+                      "id": "退回_摩根标普港股通低波红利ETF联接长图_2025-09",
+                      "title": "退-摩根标普港股通低波红利ETF联接长图",
                       "overall": {
                             "category": "文件总计",
                             "totalAuditPoints": 1,
@@ -904,51 +1323,6 @@
                                         "denominator": 1,
                                         "value": 1,
                                         "percent": "100%"
-                                  }
-                            }
-                      ],
-                      "matchCount": 1
-                },
-                {
-                      "id": "退回_摩根标普港股通低波红利ETF联接长图_2025-09",
-                      "title": "退-摩根标普港股通低波红利ETF联接长图",
-                      "overall": {
-                            "category": "文件总计",
-                            "totalAuditPoints": 1,
-                            "aiFound": 1,
-                            "aiChecked": 2,
-                            "hitAuditPoints": 1,
-                            "foundRate": {
-                                  "numerator": 1,
-                                  "denominator": 1,
-                                  "value": 1,
-                                  "percent": "100%"
-                            },
-                            "hitRate": {
-                                  "numerator": 1,
-                                  "denominator": 2,
-                                  "value": 0.5,
-                                  "percent": "50%"
-                            }
-                      },
-                      "metrics": [
-                            {
-                                  "category": "上下文不一致",
-                                  "totalAuditPoints": 1,
-                                  "aiFound": 1,
-                                  "aiChecked": 2,
-                                  "hitAuditPoints": 1,
-                                  "foundRate": {
-                                        "numerator": 1,
-                                        "denominator": 1,
-                                        "value": 1,
-                                        "percent": "100%"
-                                  },
-                                  "hitRate": {
-                                        "numerator": 1,
-                                        "denominator": 2,
-                                        "value": 0.5,
-                                        "percent": "50%"
                                   }
                             }
                       ],
