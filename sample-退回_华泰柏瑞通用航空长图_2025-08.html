@@ -1306,6 +1306,8 @@
     let manualItems = loadManualItems();
     let editingManualId = null;
     let activeReviewMode = "ai";
+    let marksVisible = true;
+    let activeReviewItemKey = "";
     let pendingManualBox = null;
     let selectingManualBox = false;
     let draftMark = null;
@@ -1504,6 +1506,7 @@ function formatRate(numerator, denominator) {
 
     function renderMarks() {
       imageWrap.querySelectorAll(".mark").forEach((mark) => mark.remove());
+      if (!marksVisible) return [];
       const reviewItems = orderedMarkItems(currentReviewItems());
       reviewItems.forEach((item, index) => {
         const mark = document.createElement("button");
@@ -1518,7 +1521,10 @@ function formatRate(numerator, denominator) {
         mark.style.setProperty("--mark-z", String(10 + index));
         mark.style.setProperty("--mark-note-offset", `${(index % 4) * 18}px`);
         mark.innerHTML = `<span class="mark-label">${item.id}</span><span class="mark-note">${item.title}</span>`;
-        mark.addEventListener("click", () => activate(item.id, { scrollCard: true }, activeReviewMode));
+        mark.addEventListener("click", (event) => {
+          event.stopPropagation();
+          toggleReviewItem(item.id, { scrollCard: true }, activeReviewMode);
+        });
         imageWrap.appendChild(mark);
       });
       return reviewItems;
@@ -1552,8 +1558,7 @@ function formatRate(numerator, denominator) {
       cards.querySelectorAll(".card").forEach((card) => {
         card.addEventListener("click", (event) => {
           event.stopPropagation();
-          switchReviewMode("ai", { force: activeReviewMode !== "ai" });
-          activate(card.dataset.id, { scrollImage: true }, "ai");
+          toggleReviewItem(card.dataset.id, { scrollImage: true }, "ai");
         });
       });
     }
@@ -1685,8 +1690,7 @@ function formatRate(numerator, denominator) {
       manualCards.querySelectorAll(".card").forEach((card) => {
         card.addEventListener("click", (event) => {
           event.stopPropagation();
-          switchReviewMode("manual", { force: activeReviewMode !== "manual" });
-          activate(card.dataset.id, { scrollImage: true }, "manual");
+          toggleReviewItem(card.dataset.id, { scrollImage: true }, "manual");
         });
       });
 
@@ -1721,18 +1725,51 @@ function formatRate(numerator, denominator) {
       });
     }
 
-    function switchReviewMode(mode, options = {}) {
-      if (!mode || (activeReviewMode === mode && !options.force)) {
-        return;
-      }
+    function clearActiveReviewSelection() {
+      activeReviewItemKey = "";
+      document.querySelectorAll(".mark, .card").forEach((node) => {
+        node.classList.remove("active");
+        if (node.classList.contains("mark")) node.style.zIndex = "";
+      });
+    }
+
+    function firstReviewItemForMode(mode) {
+      return (mode === "manual" ? manualDisplayItems() : items)[0];
+    }
+
+    function showReviewMarks(mode = activeReviewMode, options = {}) {
+      marksVisible = true;
       activeReviewMode = mode;
       reviewPanels.forEach((panel) => {
         panel.classList.toggle("active", panel.dataset.reviewMode === mode);
       });
       renderMarks();
-      const firstItem = currentReviewItems()[0];
+      const firstItem = options.activateFirst === false ? null : firstReviewItemForMode(mode);
       if (firstItem) {
         activate(firstItem.id, {}, mode);
+      }
+    }
+
+    function hideReviewMarks() {
+      marksVisible = false;
+      clearActiveReviewSelection();
+      renderMarks();
+    }
+
+    function switchReviewMode(mode, options = {}) {
+      if (!mode) return;
+      if (activeReviewMode === mode && !options.force) {
+        return;
+      }
+      showReviewMarks(mode, options);
+    }
+
+    function toggleReviewPanel(mode) {
+      if (!mode) return;
+      if (activeReviewMode === mode && marksVisible) {
+        hideReviewMarks();
+      } else {
+        showReviewMarks(mode);
       }
     }
 
@@ -1882,6 +1919,25 @@ function formatRate(numerator, denominator) {
       }, 180);
     }
 
+    function revealReviewItem(id, options = {}, mode = activeReviewMode) {
+      marksVisible = true;
+      activeReviewMode = mode;
+      reviewPanels.forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.reviewMode === mode);
+      });
+      renderMarks();
+      activate(id, options, mode);
+    }
+
+    function toggleReviewItem(id, options = {}, mode = activeReviewMode) {
+      const itemKey = `${mode}:${id}`;
+      if (activeReviewMode === mode && marksVisible && activeReviewItemKey === itemKey) {
+        hideReviewMarks();
+        return;
+      }
+      revealReviewItem(id, options, mode);
+    }
+
     function activate(id, options = {}, mode = activeReviewMode) {
       document.querySelectorAll(".mark, .card").forEach((node) => {
         node.classList.remove("active");
@@ -1890,6 +1946,7 @@ function formatRate(numerator, denominator) {
       const mark = document.querySelector(`#mark-${mode}-${id}`);
       const card = document.querySelector(`[data-review-mode="${mode}"][data-id="${id}"]`);
       if (!mark || !card) return;
+      activeReviewItemKey = `${mode}:${id}`;
 
       mark.classList.add("active");
       mark.style.zIndex = "1000";
@@ -1914,8 +1971,10 @@ function formatRate(numerator, denominator) {
     renderCards();
     renderManualCards();
     reviewPanels.forEach((panel) => {
-      panel.addEventListener("click", () => switchReviewMode(panel.dataset.reviewMode));
-      panel.addEventListener("focusin", () => switchReviewMode(panel.dataset.reviewMode));
+      panel.addEventListener("click", (event) => {
+        if (event.target.closest(".card, button, a, input, textarea, select, form")) return;
+        switchReviewMode(panel.dataset.reviewMode);
+      });
     });
     window.addEventListener("load", () => {
       requestAnimationFrame(() => {
