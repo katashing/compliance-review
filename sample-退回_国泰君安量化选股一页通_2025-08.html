@@ -33,7 +33,7 @@
     .app {
       height: 100vh;
       display: grid;
-      grid-template-columns: minmax(300px, 34vw) minmax(620px, 1fr);
+      grid-template-columns: var(--image-pane-width, clamp(420px, 52vw, calc(100vw - 736px))) 16px minmax(720px, 1fr);
       overflow: hidden;
       min-height: 0;
     }
@@ -47,6 +47,51 @@
       display: grid;
       grid-template-rows: auto auto 1fr;
       gap: 14px;
+    }
+
+    .pane-resizer {
+      width: 16px;
+      min-width: 16px;
+      height: 100vh;
+      border: 0;
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      background: linear-gradient(90deg, #e7eff8, #f8fbff);
+      cursor: col-resize;
+      position: relative;
+      z-index: 20;
+      padding: 0;
+    }
+
+    .pane-resizer::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 46px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle, rgba(96, 112, 134, 0.82) 1.5px, transparent 2px) center 8px / 6px 10px repeat-y,
+        rgba(255, 255, 255, 0.72);
+      box-shadow: 0 3px 10px rgba(32, 48, 72, 0.12);
+      transform: translate(-50%, -50%);
+    }
+
+    .pane-resizer:hover,
+    .pane-resizer:focus-visible,
+    .app.resizing .pane-resizer {
+      background: linear-gradient(90deg, #d7ebfb, #f2f8ff);
+      outline: none;
+    }
+
+    .app.resizing {
+      user-select: none;
+      cursor: col-resize;
+    }
+
+    .app.resizing * {
+      cursor: col-resize !important;
     }
 
     .topbar {
@@ -963,12 +1008,16 @@
       border-left-color: var(--ok);
     }
 
-    @media (max-width: 980px) {
+    @media (max-width: 1160px) {
       .app {
         height: auto;
         min-height: 100vh;
         grid-template-columns: 1fr;
         overflow: visible;
+      }
+
+      .pane-resizer {
+        display: none;
       }
 
       .image-pane {
@@ -1059,6 +1108,8 @@
         </div>
       </div>
     </section>
+
+    <button class="pane-resizer" id="paneResizer" type="button" aria-label="拖动调整左右栏宽度" title="拖动调整左右栏宽度"></button>
 
     <section class="content-pane" aria-label="审核结果">
       <section class="summary" aria-label="公共审核信息">
@@ -1288,8 +1339,10 @@
           }
     ];
 
+    const app = document.querySelector(".app");
     const imageWrap = document.querySelector("#imageWrap");
     const stage = document.querySelector("#stage");
+    const paneResizer = document.querySelector("#paneResizer");
     const zoomOut = document.querySelector("#zoomOut");
     const zoomIn = document.querySelector("#zoomIn");
     const zoomReset = document.querySelector("#zoomReset");
@@ -1327,6 +1380,9 @@
     const maxImageZoom = 8;
     const imageZoomStep = 0.25;
     let imagePanStart = null;
+    let imagePanStartedOnMark = false;
+    let imagePanSuppressNextMarkClick = false;
+    let paneResizeStart = null;
 function formatRate(numerator, denominator) {
       if (!denominator) return "-";
       return `${Math.round((numerator / denominator) * 100)}%`;
@@ -1387,13 +1443,16 @@ function formatRate(numerator, denominator) {
 
     function canPanImage(event) {
       if (selectingManualBox) return false;
-      if (event.target.closest(".mark, .draft-mark, button, a, input, textarea, select")) return false;
+      if (event.target.closest(".draft-mark, a, input, textarea, select")) return false;
+      if (event.target.closest("button") && !event.target.closest(".mark")) return false;
       return stage.scrollWidth > stage.clientWidth || stage.scrollHeight > stage.clientHeight;
     }
 
     function startImagePan(event) {
       if (!canPanImage(event)) return;
       event.preventDefault();
+      imagePanStartedOnMark = Boolean(event.target.closest(".mark"));
+      imagePanSuppressNextMarkClick = false;
       imagePanStart = {
         x: event.clientX,
         y: event.clientY,
@@ -1407,6 +1466,11 @@ function formatRate(numerator, denominator) {
     function moveImagePan(event) {
       if (!imagePanStart) return;
       event.preventDefault();
+      const deltaX = event.clientX - imagePanStart.x;
+      const deltaY = event.clientY - imagePanStart.y;
+      if (imagePanStartedOnMark && (Math.abs(deltaX) > 4 || Math.abs(deltaY) > 4)) {
+        imagePanSuppressNextMarkClick = true;
+      }
       stage.scrollLeft = imagePanStart.left - (event.clientX - imagePanStart.x);
       stage.scrollTop = imagePanStart.top - (event.clientY - imagePanStart.y);
     }
@@ -1414,6 +1478,7 @@ function formatRate(numerator, denominator) {
     function stopImagePan(event) {
       if (!imagePanStart) return;
       imagePanStart = null;
+      imagePanStartedOnMark = false;
       stage.classList.remove("dragging");
       if (event?.pointerId !== undefined && stage.hasPointerCapture?.(event.pointerId)) {
         stage.releasePointerCapture(event.pointerId);
@@ -1426,6 +1491,70 @@ function formatRate(numerator, denominator) {
       stage.addEventListener("pointerup", stopImagePan);
       stage.addEventListener("pointercancel", stopImagePan);
       stage.addEventListener("lostpointercapture", stopImagePan);
+    }
+
+    function refreshImageAfterPaneResize() {
+      imageWrap.style.removeProperty("--image-width");
+      baseImageWidth = imageWrap.getBoundingClientRect().width || stage.clientWidth || 420;
+      setImageZoom(imageZoom, { resetScroll: true });
+    }
+
+    function paneResizeBounds() {
+      const rect = app.getBoundingClientRect();
+      const minLeft = 420;
+      const minRight = 720;
+      const handleWidth = paneResizer?.getBoundingClientRect().width || 16;
+      const maxLeft = Math.max(minLeft, rect.width - minRight - handleWidth);
+      return { minLeft, maxLeft };
+    }
+
+    function startPaneResize(event) {
+      if (!paneResizer || window.matchMedia("(max-width: 1160px)").matches) return;
+      event.preventDefault();
+      const rect = app.getBoundingClientRect();
+      paneResizeStart = { appLeft: rect.left, appWidth: rect.width };
+      app.classList.add("resizing");
+      paneResizer.setPointerCapture?.(event.pointerId);
+    }
+
+    function movePaneResize(event) {
+      if (!paneResizeStart) return;
+      event.preventDefault();
+      const bounds = paneResizeBounds();
+      const nextLeft = Math.max(bounds.minLeft, Math.min(event.clientX - paneResizeStart.appLeft, bounds.maxLeft));
+      app.style.setProperty("--image-pane-width", `${Math.round(nextLeft)}px`);
+      window.requestAnimationFrame(refreshImageAfterPaneResize);
+    }
+
+    function stopPaneResize(event) {
+      if (!paneResizeStart) return;
+      paneResizeStart = null;
+      app.classList.remove("resizing");
+      if (event?.pointerId !== undefined && paneResizer?.hasPointerCapture?.(event.pointerId)) {
+        paneResizer.releasePointerCapture(event.pointerId);
+      }
+      refreshImageAfterPaneResize();
+    }
+
+    function initializePaneResize() {
+      if (!paneResizer) return;
+      paneResizer.addEventListener("pointerdown", startPaneResize);
+      paneResizer.addEventListener("pointermove", movePaneResize);
+      paneResizer.addEventListener("pointerup", stopPaneResize);
+      paneResizer.addEventListener("pointercancel", stopPaneResize);
+      paneResizer.addEventListener("lostpointercapture", stopPaneResize);
+      window.addEventListener("resize", () => {
+        if (window.matchMedia("(max-width: 1160px)").matches) {
+          app.style.removeProperty("--image-pane-width");
+          return;
+        }
+        const current = parseFloat(getComputedStyle(app).getPropertyValue("--image-pane-width"));
+        if (!Number.isFinite(current)) return;
+        const bounds = paneResizeBounds();
+        const nextLeft = Math.max(bounds.minLeft, Math.min(current, bounds.maxLeft));
+        app.style.setProperty("--image-pane-width", `${Math.round(nextLeft)}px`);
+        refreshImageAfterPaneResize();
+      });
     }
 
     function renderBusinessMetrics() {
@@ -1532,6 +1661,10 @@ function formatRate(numerator, denominator) {
         mark.innerHTML = `<span class="mark-label">${item.id}</span><span class="mark-note">${item.title}</span>`;
         mark.addEventListener("click", (event) => {
           event.stopPropagation();
+          if (imagePanSuppressNextMarkClick) {
+            imagePanSuppressNextMarkClick = false;
+            return;
+          }
           toggleReviewItem(item.id, { scrollCard: true }, activeReviewMode);
         });
         imageWrap.appendChild(mark);
@@ -1956,6 +2089,12 @@ function formatRate(numerator, denominator) {
       const card = document.querySelector(`[data-review-mode="${mode}"][data-id="${id}"]`);
       if (!mark || !card) return;
       activeReviewItemKey = `${mode}:${id}`;
+      activeReviewItemKey = `${mode}:${id}`;
+      activeReviewItemKey = `${mode}:${id}`;
+      activeReviewItemKey = `${mode}:${id}`;
+      activeReviewItemKey = `${mode}:${id}`;
+      activeReviewItemKey = `${mode}:${id}`;
+      activeReviewItemKey = `${mode}:${id}`;
 
       mark.classList.add("active");
       mark.style.zIndex = "1000";
@@ -1977,6 +2116,7 @@ function formatRate(numerator, denominator) {
     renderBusinessMetrics();
     initializeImageZoom();
     initializeImagePan();
+    initializePaneResize();
     renderCards();
     renderManualCards();
     reviewPanels.forEach((panel) => {
